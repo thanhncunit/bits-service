@@ -6,7 +6,7 @@ task default: ['spec:all']
 
 namespace :spec do
   desc 'Run all specs'
-  task all: [:unit, :integration, :rubocop_autocorrect]
+  task all: [:rubocop_autocorrect, :unit, :integration]
 
   RSpec::Core::RakeTask.new(:unit) do |t|
     t.pattern = 'spec/unit/**/*_spec.rb'
