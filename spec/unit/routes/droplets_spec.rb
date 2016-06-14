@@ -4,30 +4,23 @@ require 'securerandom'
 module BitsService
   module Routes
     describe Droplets do
-      let(:headers) { Hash.new }
-
-      let(:zip_filename) { 'file.zip' }
-
       let(:zip_filepath) do
         path = File.join(Dir.mktmpdir, zip_filename)
         TestZip.create(path, 1, 1024)
         path
       end
-
       let(:zip_file) do
         Rack::Test::UploadedFile.new(File.new(zip_filepath))
       end
-
       let(:non_zip_file) do
         Rack::Test::UploadedFile.new(Tempfile.new('foo'))
       end
-
+      let(:headers) { Hash.new }
+      let(:zip_filename) { 'file.zip' }
       let(:guid) { SecureRandom.uuid }
-
+      let(:blobstore) { double(BitsService::Blobstore::Client) }
       let(:upload_body) { { droplet: zip_file, droplet_name: zip_filename } }
-
       let(:use_nginx) { false }
-
       let(:config) do
         {
           droplets: {
@@ -70,7 +63,6 @@ module BitsService
         end
 
         it 'stores the uploaded file in the droplet blobstore using the correct key' do
-          blobstore = double(BitsService::Blobstore::Client)
           expect_any_instance_of(Routes::Droplets).to receive(:droplet_blobstore).and_return(blobstore)
           expect(blobstore).to receive(:cp_to_blobstore).with(zip_filepath, guid)
 
@@ -95,20 +87,63 @@ module BitsService
           expect(File.exist?(zip_filepath)).to be_falsy
         end
 
-        context 'when no file is being uploaded' do
-          before(:each) do
+        context 'from another droplet' do
+          let!(:guid) { SecureRandom.uuid }
+          let!(:new_guid) { SecureRandom.uuid }
+
+          let(:blob) { double(:blob) }
+          let(:droplet_file) do
+            Tempfile.new('droplet').tap do |file|
+              file.write('content!')
+              file.close
+            end
+          end
+          subject(:response) { put "/droplets/#{new_guid}", JSON.generate(source_guid: guid) }
+
+          before do
             allow_any_instance_of(Helpers::Upload::Params).to receive(:upload_filepath).and_return(nil)
+            allow_any_instance_of(Routes::Droplets).to receive(:droplet_blobstore).and_return(blobstore)
+            allow(blobstore).to receive(:blob).and_return(blob)
+            allow(blobstore).to receive(:cp_file_between_keys)
           end
 
-          it 'returns a corresponding error' do
-            expect_any_instance_of(Routes::Droplets).to_not receive(:droplet_blobstore)
+          it 'returns HTTP status 201' do
+            expect(response.status).to eq(201)
+          end
 
-            put "/droplets/#{guid}", upload_body, headers
+          it 'copies the blob between keys' do
+            expect(blobstore).to receive(:cp_file_between_keys).with(guid, new_guid)
+            response
+          end
 
-            expect(last_response.status).to eq(400)
-            json = JSON.parse(last_response.body)
-            expect(json['code']).to eq(290_003)
-            expect(json['description']).to match(/a file must be provided/)
+          context 'when the blob is missing' do
+            before do
+              allow(blobstore).to receive(:blob).and_return(nil)
+            end
+
+            it 'returns HTTP status 404' do
+              expect(response.status).to eq(404)
+            end
+          end
+
+          context 'when coping the blob object fails' do
+            before do
+              allow(blobstore).to receive(:cp_file_between_keys).and_raise(StandardError)
+            end
+
+            it 'returns HTTP status 500' do
+              expect(response.status).to eq(500)
+            end
+          end
+
+          context 'when fetching the blob object fails' do
+            before do
+              allow(blobstore).to receive(:blob).and_raise(StandardError)
+            end
+
+            it 'returns HTTP status 500' do
+              expect(response.status).to eq(500)
+            end
           end
         end
 

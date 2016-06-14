@@ -30,12 +30,10 @@ describe 'droplet resource', type: :integration do
   end
 
   let(:zip_filepath) { File.join(Dir.mktmpdir, 'file.zip') }
-
   let(:zip_file) do
     TestZip.create(zip_filepath, 1, 1024)
     File.new(zip_filepath)
   end
-
   let(:upload_body) { { droplet: zip_file } }
   let(:resource_path) { "/droplets/#{guid}" }
   let(:guid) { SecureRandom.uuid }
@@ -45,6 +43,8 @@ describe 'droplet resource', type: :integration do
   end
 
   describe 'PUT /droplets/:guid' do
+    let(:droplet_contents) { File.open(zip_filepath).read }
+
     it 'returns HTTP status 201' do
       response = make_put_request(resource_path, upload_body)
       expect(response.code).to eq 201
@@ -55,6 +55,43 @@ describe 'droplet resource', type: :integration do
 
       expected_path = blobstore_path(guid)
       expect(File).to exist(expected_path)
+    end
+
+    context 'with source_guid' do
+      let(:source_guid) { SecureRandom.uuid }
+      let(:body) { JSON.generate(source_guid: source_guid) }
+      let(:source_guid) do
+        SecureRandom.uuid.tap do |guid|
+          make_put_request("/droplets/#{guid}", upload_body)
+        end
+      end
+
+      it 'returns HTTP status 201' do
+        response = make_put_request(resource_path, body)
+        expect(response.code).to eq 201
+      end
+
+      it 'stores the droplet in the droplet blobstore' do
+        make_put_request(resource_path, body)
+        expected_path = blob_path(@root_dir, 'directory-key', guid)
+        expect(File).to exist(expected_path)
+        expect(File.read(expected_path)).to eq(droplet_contents)
+      end
+
+      context 'when the droplet does not exist' do
+        let(:source_guid) { 'invalid-guid' }
+
+        it 'returns HTTP status 404' do
+          response = make_put_request(resource_path, body)
+          expect(response.code).to eq 404
+        end
+
+        it 'returns an error message' do
+          response = make_put_request(resource_path, body)
+          description = JSON.parse(response.body)['description']
+          expect(description).to eq 'Unknown request'
+        end
+      end
     end
 
     context 'when an empty request body is being sent' do
@@ -68,7 +105,7 @@ describe 'droplet resource', type: :integration do
       it 'returns the expected error description' do
         response = make_put_request(resource_path, upload_body)
         description = JSON.parse(response.body)['description']
-        expect(description).to eq 'The droplet upload is invalid: a file must be provided'
+        expect(description).to eq 'Cannot create droplet. The source must either be uploaded or the guid of a source droplet to be copied must be provided'
       end
     end
   end

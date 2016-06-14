@@ -6,10 +6,12 @@ module BitsService
       put '/droplets/:guid' do |guid|
         begin
           uploaded_filepath = upload_params.upload_filepath('droplet')
-          fail Errors::ApiError.new_from_details('DropletUploadInvalid', 'a file must be provided') if uploaded_filepath.to_s == ''
+          return create_from_upload(uploaded_filepath, guid) if uploaded_filepath
 
-          droplet_blobstore.cp_to_blobstore(uploaded_filepath, guid)
-          status 201
+          source_guid = parsed_body['source_guid']
+          return create_as_duplicate(source_guid, guid) if source_guid
+
+          fail Errors::ApiError.new_from_details('InvalidDropletSource')
         ensure
           FileUtils.rm_f(uploaded_filepath) if uploaded_filepath
         end
@@ -35,6 +37,37 @@ module BitsService
         fail Errors::ApiError.new_from_details('NotFound', guid) unless blob
         droplet_blobstore.delete_blob(blob)
         status 204
+      end
+
+      private
+
+      def create_from_upload(uploaded_filepath, guid)
+        fail Errors::ApiError.new_from_details('DropletUploadInvalid', 'a file must be provided') if uploaded_filepath.to_s == ''
+
+        droplet_blobstore.cp_to_blobstore(uploaded_filepath, guid)
+        status 201
+      ensure
+        FileUtils.rm_f(uploaded_filepath) if uploaded_filepath
+      end
+
+      def create_as_duplicate(source_guid, new_guid)
+        blob = droplet_blobstore.blob(source_guid)
+        fail Errors::ApiError.new_from_details('NotFound', source_guid) unless blob
+
+        droplet_blobstore.cp_file_between_keys(source_guid, new_guid)
+        status 201
+      end
+
+      def parsed_body
+        body = request.body.read
+
+        if body.empty?
+          {}
+        else
+          JSON.parse(body)
+        end
+      rescue JSON::ParserError => e
+        fail Errors::ApiError.new_from_details('MessageParseError', e.message)
       end
     end
   end
