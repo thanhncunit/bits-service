@@ -36,7 +36,7 @@ describe 'droplet resource', type: :integration do
   end
   let(:upload_body) { { droplet: zip_file } }
   let(:resource_path) { "/droplets/#{guid}" }
-  let(:guid) { SecureRandom.uuid }
+  let(:guid) { "#{SecureRandom.uuid}/#{SecureRandom.uuid}" }
 
   def blobstore_path(guid)
     blob_path(@root_dir, 'directory-key', guid)
@@ -58,10 +58,9 @@ describe 'droplet resource', type: :integration do
     end
 
     context 'with source_guid' do
-      let(:source_guid) { SecureRandom.uuid }
       let(:body) { JSON.generate(source_guid: source_guid) }
       let(:source_guid) do
-        SecureRandom.uuid.tap do |guid|
+        "#{SecureRandom.uuid}/#{SecureRandom.uuid}".tap do |guid|
           make_put_request("/droplets/#{guid}", upload_body)
         end
       end
@@ -79,7 +78,7 @@ describe 'droplet resource', type: :integration do
       end
 
       context 'when the droplet does not exist' do
-        let(:source_guid) { 'invalid-guid' }
+        let(:source_guid) { 'bla/invalid-guid' }
 
         it 'returns HTTP status 404' do
           response = make_put_request(resource_path, body)
@@ -128,7 +127,7 @@ describe 'droplet resource', type: :integration do
     end
 
     context 'when the droplets does not exist' do
-      let(:resource_path) { '/droplets/not-existing' }
+      let(:resource_path) { '/droplets/not-existing/droplet' }
 
       it 'returns HTTP status code 404' do
         response = make_get_request(resource_path)
@@ -163,7 +162,7 @@ describe 'droplet resource', type: :integration do
     end
 
     context 'when the droplets does not exist' do
-      let(:resource_path) { '/droplets/not-existing' }
+      let(:resource_path) { '/droplets/not-existing/droplet' }
 
       it 'returns HTTP status code 404' do
         response = make_delete_request(resource_path)

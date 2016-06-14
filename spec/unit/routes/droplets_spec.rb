@@ -17,7 +17,7 @@ module BitsService
       end
       let(:headers) { Hash.new }
       let(:zip_filename) { 'file.zip' }
-      let(:guid) { SecureRandom.uuid }
+      let(:guid) { "#{SecureRandom.uuid}/#{SecureRandom.uuid}" }
       let(:blobstore) { double(BitsService::Blobstore::Client) }
       let(:upload_body) { { droplet: zip_file, droplet_name: zip_filename } }
       let(:use_nginx) { false }
@@ -88,8 +88,7 @@ module BitsService
         end
 
         context 'from another droplet' do
-          let!(:guid) { SecureRandom.uuid }
-          let!(:new_guid) { SecureRandom.uuid }
+          let!(:new_guid) { "#{SecureRandom.uuid}/#{SecureRandom.uuid}" }
 
           let(:blob) { double(:blob) }
           let(:droplet_file) do
