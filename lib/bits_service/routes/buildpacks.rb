@@ -6,7 +6,6 @@ module BitsService
       put '/buildpacks/:guid' do |guid|
         begin
           uploaded_filepath = upload_params.upload_filepath('buildpack')
-          original_filename = upload_params.original_filename('buildpack')
           fail Errors::ApiError.new_from_details('BuildpackBitsUploadInvalid', 'a file must be provided') if uploaded_filepath.to_s == ''
 
           buildpack_blobstore.cp_to_blobstore(uploaded_filepath, guid)

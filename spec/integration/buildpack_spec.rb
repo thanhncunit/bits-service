@@ -77,21 +77,6 @@ describe 'buildpacks resource', type: :integration do
         expect(description).to eq 'The buildpack upload is invalid: a file must be provided'
       end
     end
-
-    context 'when the original uploaded file name is missing' do
-      let(:upload_body) { { buildpack: zip_file } }
-
-      it 'returns HTTP status 400' do
-        response = make_put_request(resource_path, upload_body)
-        expect(response.code).to eq 400
-      end
-
-      it 'returns the expected error description' do
-        response = make_put_request(resource_path, upload_body)
-        description = JSON.parse(response.body)['description']
-        expect(description).to eq 'The buildpack upload is invalid: a filename must be specified'
-      end
-    end
   end
 
   describe 'GET /buildpacks/:guid' do

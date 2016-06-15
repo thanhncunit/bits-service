@@ -102,23 +102,6 @@ module BitsService
           expect(File.exist?(zip_filepath)).to be_falsy
         end
 
-        context 'when the original filename is nil' do
-          before(:each) do
-            allow_any_instance_of(Helpers::Upload::Params).to receive(:original_filename).and_return(nil)
-          end
-
-          it 'returns a corresponding error' do
-            expect_any_instance_of(Routes::Buildpacks).to_not receive(:buildpack_blobstore)
-
-            put "/buildpacks/#{guid}", upload_body, headers
-
-            expect(last_response.status).to eq(400)
-            json = JSON.parse(last_response.body)
-            expect(json['code']).to eq(290_002)
-            expect(json['description']).to match(/a filename must be specified/)
-          end
-        end
-
         context 'when no file is being uploaded' do
           before(:each) do
             allow_any_instance_of(Helpers::Upload::Params).to receive(:upload_filepath).and_return(nil)
@@ -133,28 +116,6 @@ module BitsService
             json = JSON.parse(last_response.body)
             expect(json['code']).to eq(290_002)
             expect(json['description']).to match(/a file must be provided/)
-          end
-        end
-
-        context 'when a non-zip file is being uploaded' do
-          let(:upload_body) { { buildpack: non_zip_file, guid: guid } }
-
-          it 'returns a corresponding error' do
-            allow_any_instance_of(Helpers::Upload::Params).to receive(:original_filename).and_return('invalid.tar')
-            put "/buildpacks/#{guid}", upload_body, headers
-
-            expect(last_response.status).to eql 400
-            json = JSON.parse(last_response.body)
-            expect(json['code']).to eq(290_002)
-            expect(json['description']).to match(/only zip files allowed/)
-          end
-
-          it 'does not leave the temporary instance of the uploaded file around' do
-            filepath = non_zip_file.tempfile.path
-            allow_any_instance_of(Helpers::Upload::Params).to receive(:upload_filepath).and_return(filepath)
-            allow_any_instance_of(Helpers::Upload::Params).to receive(:original_filename).and_return(zip_filename)
-            put "/buildpacks/#{guid}", upload_body, headers
-            expect(File.exist?(filepath)).to be_falsy
           end
         end
 
