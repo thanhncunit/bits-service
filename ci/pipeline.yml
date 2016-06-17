@@ -192,6 +192,13 @@ resources:
 #
 # locks
 #
+- name: cf-release-bosh-lite-lock
+  type: pool
+  source:
+    uri: git@github.com:cloudfoundry-incubator/bits-service.git
+    branch: metadata
+    pool: locks/cf-release
+    private_key: {{github-private-key}}
 - name: cf2-aws-deployment-lock
   type: pool
   source:
@@ -703,7 +710,12 @@ jobs:
           CF_DOMAIN: {{aws-cf1-domain}}
           CF_PUBLIC_IP: {{aws-cf1-public-ip}}
           CF_DEPLOYMENT_NAME: cf1
-          CF_CCDB_NAME: ccdb_no_bits
+
+          BITS_DIRECTORY_KEY: {{cf1-s3-blobstore-bucket-name}}
+          BITS_AWS_REGION: {{cf1-s3-blobstore-region}}
+          AWS_ACCESS_KEY_ID: {{cf1-s3-blobstore-access-key-id}}
+          AWS_SECRET_ACCESS_KEY: {{cf1-s3-blobstore-secret-access-key}}
+          BLOBSTORE_TYPE: s3
       on_failure:
         put: cf1-aws-deployment-lock
         params: { release: cf1-aws-deployment-lock }
@@ -773,19 +785,8 @@ jobs:
     file: git-bits-service-release/ci/tasks/update-cf-manifest.yml
     config:
       params:
-        MANIFEST_STUBS: ci/manifests/cf-aws-network-1.yml ci/manifests/enable-bits.yml ci/manifests/bits-network-aws.yml templates/local.yml
+        MANIFEST_STUBS: ci/manifests/cf-aws-network-1.yml ci/manifests/enable-bits.yml ci/manifests/bits-network-aws.yml templates/s3.yml
         IAAS: aws
-  - task: upload-last-bits-service-release
-    file: git-bits-service-release/ci/tasks/upload-release.yml
-    config:
-      inputs:
-        - name: git-bits-service-release
-        - name: s3-bits-service-release
-      params:
-        BOSH_TARGET: {{aws-bosh-target}}
-        BOSH_USERNAME: {{aws-bosh-username}}
-        BOSH_PASSWORD: {{aws-bosh-password}}
-        RELEASE_FILE: ../s3-bits-service-release/*.tgz
   - aggregate:
     - task: deploy-CF-with-BITS
       file: git-bits-service-release/ci/tasks/deploy-release.yml
@@ -805,7 +806,12 @@ jobs:
           CF_DOMAIN: {{aws-cf1-domain}}
           CF_PUBLIC_IP: {{aws-cf1-public-ip}}
           CF_DEPLOYMENT_NAME: cf1
-          CF_CCDB_NAME: ccdb_bits
+
+          BITS_DIRECTORY_KEY: {{cf1-s3-blobstore-bucket-name}}
+          BITS_AWS_REGION: {{cf1-s3-blobstore-region}}
+          AWS_ACCESS_KEY_ID: {{cf1-s3-blobstore-access-key-id}}
+          AWS_SECRET_ACCESS_KEY: {{cf1-s3-blobstore-secret-access-key}}
+          BLOBSTORE_TYPE: s3
     - put: s3-cf-aws-manifest
       params:
         file: manifests/*.yml
@@ -902,7 +908,12 @@ jobs:
         CF_DOMAIN: {{aws-cf2-domain}}
         CF_PUBLIC_IP: {{aws-cf2-public-ip}}
         CF_DEPLOYMENT_NAME: cf2
-        CF_CCDB_NAME: ccdb_no_bits
+
+        BITS_DIRECTORY_KEY: {{cf2-s3-blobstore-bucket-name}}
+        BITS_AWS_REGION: {{cf2-s3-blobstore-region}}
+        AWS_ACCESS_KEY_ID: {{cf2-s3-blobstore-access-key-id}}
+        AWS_SECRET_ACCESS_KEY: {{cf2-s3-blobstore-secret-access-key}}
+        BLOBSTORE_TYPE: s3
     on_failure:
       put: cf2-aws-deployment-lock
       params: { release: cf2-aws-deployment-lock }
@@ -1004,19 +1015,8 @@ jobs:
     file: git-bits-service-release/ci/tasks/update-cf-manifest.yml
     config:
       params:
-        MANIFEST_STUBS: ci/manifests/cf-aws-network-2.yml ci/manifests/enable-diego-cats.yml ci/manifests/enable-bits.yml ci/manifests/bits-network-aws.yml templates/local.yml
+        MANIFEST_STUBS: ci/manifests/cf-aws-network-2.yml ci/manifests/enable-diego-cats.yml ci/manifests/enable-bits.yml ci/manifests/bits-network-aws.yml templates/s3.yml
         IAAS: aws
-  - task: upload-last-bits-service-release
-    file: git-bits-service-release/ci/tasks/upload-release.yml
-    config:
-      inputs:
-        - name: git-bits-service-release
-        - name: s3-bits-service-release
-      params:
-        BOSH_TARGET: {{aws-bosh-target}}
-        BOSH_USERNAME: {{aws-bosh-username}}
-        BOSH_PASSWORD: {{aws-bosh-password}}
-        RELEASE_FILE: ../s3-bits-service-release/*.tgz
   - task: deploy-CF-with-BITS
     file: git-bits-service-release/ci/tasks/deploy-release.yml
     config:
@@ -1035,7 +1035,12 @@ jobs:
         CF_DOMAIN: {{aws-cf2-domain}}
         CF_PUBLIC_IP: {{aws-cf2-public-ip}}
         CF_DEPLOYMENT_NAME: cf2
-        CF_CCDB_NAME: ccdb_bits
+
+        BITS_DIRECTORY_KEY: {{cf2-s3-blobstore-bucket-name}}
+        BITS_AWS_REGION: {{cf2-s3-blobstore-region}}
+        AWS_ACCESS_KEY_ID: {{cf2-s3-blobstore-access-key-id}}
+        AWS_SECRET_ACCESS_KEY: {{cf2-s3-blobstore-secret-access-key}}
+        BLOBSTORE_TYPE: s3
   - task: restart-diego-cells
     file: git-bits-service-release/ci/tasks/restart-bosh-job.yml
     config:
