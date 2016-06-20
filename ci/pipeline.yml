@@ -13,7 +13,7 @@ groups:
   - done
   - cc-tests
   - create-cf-release
-  - deploy-cf-aws
+  - deploy-cf-dea-aws
   - CATs-aws-with-bits
   - cf-release-done
   - CATs-aws
@@ -24,6 +24,14 @@ groups:
   - enable-BITS-SERVICE
   - release-cf2-aws-release-lock
   - release-cf1-aws-release-lock
+  - preparation-migration-backwards-bosh1
+  - disable-BITS-SERVICE-bosh1
+  - verification-migration-backwards-bosh1
+  - verification-migration-bosh1
+  - enable-BITS-SERVICE-bosh1
+  - prepare-migration-bosh1
+  - release-cf-bosh1-lock
+  - deploy-cf-bosh1
 #  - bump-cc-in-capi-release
 - name: bits-service
   jobs:
@@ -46,7 +54,7 @@ groups:
 - name: cf-release
   jobs:
   - create-cf-release
-  - deploy-cf-aws
+  - deploy-cf-dea-aws
   - CATs-aws-with-bits
   - cf-release-done
   - enable-BITS-SERVICE
@@ -57,6 +65,16 @@ groups:
   - enable-BITS-SERVICE-diego
   - CATs-diego-aws-with-bits
   - release-cf2-aws-release-lock
+- name: migration
+  jobs:
+  - preparation-migration-backwards-bosh1
+  - disable-BITS-SERVICE-bosh1
+  - verification-migration-backwards-bosh1
+  - verification-migration-bosh1
+  - enable-BITS-SERVICE-bosh1
+  - prepare-migration-bosh1
+  - release-cf-bosh1-lock
+  - deploy-cf-bosh1
 - name: infrastructure
   jobs:
   - recreate-bosh-lite-1
@@ -192,6 +210,13 @@ resources:
 #
 # locks
 #
+- name: cf-bosh1-lock
+  type: pool
+  source:
+    uri: git@github.com:cloudfoundry-incubator/bits-service.git
+    branch: metadata
+    pool: locks/cf-bosh1-lock
+    private_key: {{github-private-key}}
 - name: cf-release-bosh-lite-lock
   type: pool
   source:
@@ -603,19 +628,23 @@ jobs:
       passed:
         - CATs-aws-with-bits
         - CATs-diego-aws-with-bits
+        - verification-migration-backwards-bosh1
     - get: s3-cf-release
       passed:
         - CATs-aws-with-bits
         - CATs-diego-aws-with-bits
+        - verification-migration-backwards-bosh1
     - get: cf-release-version
       trigger: true
       passed:
         - CATs-aws-with-bits
         - CATs-diego-aws-with-bits
+        - verification-migration-backwards-bosh1
     - get: git-bits-service-release
       passed:
         - CATs-aws-with-bits
         - CATs-diego-aws-with-bits
+        - verification-migration-backwards-bosh1
   - task: create-bosh-lite-manifest
     file: git-bits-service-release/ci/tasks/update-cf-manifest.yml
     config:
@@ -652,7 +681,7 @@ jobs:
           VERSION_FILE: cf-release-version/number
           RELEASE_NAME: cf-release
 
-- name: deploy-cf-aws
+- name: deploy-cf-dea-aws
   serial: true
   plan:
   - aggregate:
@@ -734,7 +763,7 @@ jobs:
 - name: release-cf1-aws-release-lock
   plan:
   - get: cf1-aws-deployment-lock
-    passed: [deploy-cf-aws]
+    passed: [deploy-cf-dea-aws]
   - put: cf1-aws-deployment-lock
     params: { release: cf1-aws-deployment-lock }
 
@@ -743,18 +772,18 @@ jobs:
   plan:
   - aggregate:
     - get: git-cf-release
-      passed: [deploy-cf-aws]
+      passed: [deploy-cf-dea-aws]
     - get: s3-cf-release
-      passed: [deploy-cf-aws]
+      passed: [deploy-cf-dea-aws]
     - get: s3-bits-service-release
-      passed: [deploy-cf-aws]
+      passed: [deploy-cf-dea-aws]
     - get: cf-release-version
-      passed: [deploy-cf-aws]
+      passed: [deploy-cf-dea-aws]
     - get: cf1-aws-deployment-lock
       trigger: true
-      passed: [deploy-cf-aws]
+      passed: [deploy-cf-dea-aws]
     - get: git-bits-service-release
-      passed: [deploy-cf-aws]
+      passed: [deploy-cf-dea-aws]
   - task: run-cats
     attempts: 6
     config:
@@ -789,7 +818,7 @@ jobs:
       trigger: true
       passed: [CATs-aws]
     - get: bits-service-release-version
-      passed: [deploy-cf-aws]
+      passed: [deploy-cf-dea-aws]
     - get: git-bits-service-release
       passed: [CATs-aws]
   - task: update-cf-manifest
@@ -1109,6 +1138,312 @@ jobs:
         ERRAND_NAME: acceptance_tests
   - put: cf2-aws-deployment-lock
     params: { release: cf2-aws-deployment-lock }
+
+# Migration
+
+- name: deploy-cf-bosh1
+  serial: true
+  plan:
+  - aggregate:
+    - get: git-cf-release
+      passed: [create-cf-release]
+    - put: cf-bosh1-lock
+      params: { acquire: true }
+    - get: cf-release-version
+      passed: [create-cf-release]
+      trigger: true
+    - get: s3-cf-release
+      passed: [create-cf-release]
+    - get: s3-bits-service-release
+      passed: [done]
+    - get: cf-release-version
+      passed: [create-cf-release]
+    - get: bits-service-release-version
+      passed: [done]
+      trigger: true
+    - get: git-bits-service-release
+  - aggregate:
+    - task: update-cf-manifest
+      file: git-bits-service-release/ci/tasks/update-cf-manifest.yml
+      config:
+        params:
+          IAAS: lite
+          MANIFEST_STUBS: ci/manifests/bits-network-bosh-lite.yml templates/s3.yml ci/manifests/bsmt-errands.yml
+    - task: upload-cf-release-bosh
+      file: git-bits-service-release/ci/tasks/upload-release.yml
+      config:
+        inputs:
+          - name: git-bits-service-release
+          - name: s3-cf-release
+        params:
+          BOSH_TARGET: {{bosh-target}}
+          BOSH_USERNAME: {{bosh-username}}
+          BOSH_PASSWORD: {{bosh-password}}
+          RELEASE_FILE: ../s3-cf-release/cf-*.tgz
+    - task: upload-bits-release-bosh
+      file: git-bits-service-release/ci/tasks/upload-release.yml
+      config:
+        inputs:
+          - name: git-bits-service-release
+          - name: s3-bits-service-release
+        params:
+          BOSH_TARGET: {{bosh-target}}
+          BOSH_USERNAME: {{bosh-username}}
+          BOSH_PASSWORD: {{bosh-password}}
+          RELEASE_FILE: ../s3-bits-service-release/*.tgz
+  - aggregate:
+    - task: deploy-cf
+      file: git-bits-service-release/ci/tasks/deploy-release.yml
+      config:
+        inputs:
+          - name: git-bits-service-release
+          - name: bits-service-release-version
+          - name: manifests
+        params:
+          MANIFEST_PATH: ../manifests/manifest-*.yml
+          BOSH_TARGET: {{bosh-target}}
+          BOSH_USERNAME: {{bosh-username}}
+          BOSH_PASSWORD: {{bosh-password}}
+          RELEASE_VERSION_FILE: ../bits-service-release-version/number
+          CF_USER: admin
+          CF_PASSWORD: admin
+          CF_DOMAIN: bosh-lite.com
+          BITS_DIRECTORY_KEY: {{cf-migration-s3-blobstore-bucket-name}}
+          BITS_AWS_REGION: {{cf-migration-s3-blobstore-region}}
+          AWS_ACCESS_KEY_ID: {{cf-migration-s3-blobstore-access-key-id}}
+          AWS_SECRET_ACCESS_KEY: {{cf-migration-s3-blobstore-secret-access-key}}
+          BLOBSTORE_TYPE: s3
+      on_failure:
+        put: cf-bosh1-lock
+        params: { release: cf-bosh1-lock }
+
+- name: release-cf-bosh1-lock
+  plan:
+  - get: cf-bosh1-lock
+    passed: [deploy-cf-bosh1]
+  - put: cf-bosh1-lock
+    params: { release: cf-bosh1-lock }
+
+- name: prepare-migration-bosh1
+  serial: true
+  plan:
+  - aggregate:
+    - get: git-cf-release
+      passed: [deploy-cf-bosh1]
+    - get: s3-cf-release
+      passed: [deploy-cf-bosh1]
+    - get: s3-bits-service-release
+      passed: [deploy-cf-bosh1]
+    - get: cf-release-version
+      passed: [deploy-cf-bosh1]
+    - get: cf-bosh1-lock
+      trigger: true
+      passed: [deploy-cf-bosh1]
+    - get: git-bits-service-release
+      passed: [deploy-cf-bosh1]
+  - task: run-bits-service-migration-tests
+    config:
+      platform: linux
+      image: docker:///flintstonecf/ci
+      inputs:
+        - name: git-bits-service-release
+      run:
+        path: git-bits-service-release/ci/scripts/run-errand.sh
+      params:
+        BOSH_TARGET: {{bosh-target}}
+        BOSH_USERNAME: {{bosh-username}}
+        BOSH_PASSWORD: {{bosh-password}}
+        ERRAND_NAME: bsmt_preparation
+        DEPLOYMENT_NAME: cf-warden
+
+- name: enable-BITS-SERVICE-bosh1
+  serial: true
+  plan:
+  - aggregate:
+    - get: git-cf-release
+      passed: [prepare-migration-bosh1]
+    - get: cf-release-version
+      passed: [prepare-migration-bosh1]
+    - get: s3-cf-release
+      passed: [prepare-migration-bosh1]
+    - get: cf-release-version
+      passed: [prepare-migration-bosh1]
+    - get: cf-bosh1-lock
+      trigger: true
+      passed: [prepare-migration-bosh1]
+    - get: bits-service-release-version
+      passed: [deploy-cf-bosh1]
+    - get: git-bits-service-release
+      passed: [prepare-migration-bosh1]
+  - task: update-cf-manifest
+    file: git-bits-service-release/ci/tasks/update-cf-manifest.yml
+    config:
+      params:
+        MANIFEST_STUBS: ci/manifests/bits-network-bosh-lite.yml ci/manifests/enable-bits.yml templates/s3.yml ci/manifests/bsmt-errands.yml
+        IAAS: lite
+  - aggregate:
+    - task: deploy-CF-with-BITS
+      file: git-bits-service-release/ci/tasks/deploy-release.yml
+      config:
+        inputs:
+          - name: git-bits-service-release
+          - name: bits-service-release-version
+          - name: manifests
+        params:
+          MANIFEST_PATH: ../manifests/manifest-*.yml
+          BOSH_TARGET: {{bosh-target}}
+          BOSH_USERNAME: {{bosh-username}}
+          BOSH_PASSWORD: {{bosh-password}}
+          RELEASE_VERSION_FILE: ../bits-service-release-version/number
+          CF_USER: admin
+          CF_PASSWORD: admin
+          CF_DOMAIN: bosh-lite.com
+          BITS_DIRECTORY_KEY: {{cf-migration-s3-blobstore-bucket-name}}
+          BITS_AWS_REGION: {{cf-migration-s3-blobstore-region}}
+          AWS_ACCESS_KEY_ID: {{cf-migration-s3-blobstore-access-key-id}}
+          AWS_SECRET_ACCESS_KEY: {{cf-migration-s3-blobstore-secret-access-key}}
+          BLOBSTORE_TYPE: s3
+
+- name: verification-migration-bosh1
+  serial: true
+  plan:
+  - aggregate:
+    - get: git-cf-release
+      passed: [enable-BITS-SERVICE-bosh1]
+    - get: s3-cf-release
+      passed: [enable-BITS-SERVICE-bosh1]
+    - get: cf-release-version
+      passed: [enable-BITS-SERVICE-bosh1]
+    - get: cf-bosh1-lock
+      trigger: true
+      passed: [enable-BITS-SERVICE-bosh1]
+    - get: git-bits-service-release
+      passed: [enable-BITS-SERVICE-bosh1]
+  - task: run-bits-service-migration-tests
+    config:
+      platform: linux
+      image: docker:///flintstonecf/ci
+      inputs:
+        - name: git-bits-service-release
+      run:
+        path: git-bits-service-release/ci/scripts/run-errand.sh
+      params:
+        BOSH_TARGET: {{bosh-target}}
+        BOSH_USERNAME: {{bosh-username}}
+        BOSH_PASSWORD: {{bosh-password}}
+        DEPLOYMENT_NAME: cf-warden
+        ERRAND_NAME: bsmt_verification
+
+- name: preparation-migration-backwards-bosh1
+  serial: true
+  plan:
+  - aggregate:
+    - get: git-cf-release
+      passed: [verification-migration-bosh1]
+    - get: s3-cf-release
+      passed: [verification-migration-bosh1]
+    - get: cf-release-version
+      passed: [verification-migration-bosh1]
+    - get: cf-bosh1-lock
+      trigger: true
+      passed: [verification-migration-bosh1]
+    - get: git-bits-service-release
+      passed: [verification-migration-bosh1]
+  - task: run-bits-service-migration-tests
+    config:
+      platform: linux
+      image: docker:///flintstonecf/ci
+      inputs:
+        - name: git-bits-service-release
+      run:
+        path: git-bits-service-release/ci/scripts/run-errand.sh
+      params:
+        BOSH_TARGET: {{bosh-target}}
+        BOSH_USERNAME: {{bosh-username}}
+        BOSH_PASSWORD: {{bosh-password}}
+        DEPLOYMENT_NAME: cf-warden
+        ERRAND_NAME: bsmt_preparation
+
+- name: disable-BITS-SERVICE-bosh1
+  serial: true
+  plan:
+  - aggregate:
+    - get: git-cf-release
+      passed: [preparation-migration-backwards-bosh1]
+    - get: cf-release-version
+      passed: [preparation-migration-backwards-bosh1]
+    - get: s3-cf-release
+      passed: [preparation-migration-backwards-bosh1]
+    - get: cf-release-version
+      passed: [preparation-migration-backwards-bosh1]
+    - get: cf-bosh1-lock
+      trigger: true
+      passed: [preparation-migration-backwards-bosh1]
+    - get: bits-service-release-version
+      passed: [enable-BITS-SERVICE-bosh1]
+    - get: git-bits-service-release
+      passed: [preparation-migration-backwards-bosh1]
+  - task: update-cf-manifest
+    file: git-bits-service-release/ci/tasks/update-cf-manifest.yml
+    config:
+      params:
+        MANIFEST_STUBS: ci/manifests/bits-network-bosh-lite.yml templates/s3.yml ci/manifests/bsmt-errands.yml
+        IAAS: lite
+  - aggregate:
+    - task: deploy-CF-with-BITS
+      file: git-bits-service-release/ci/tasks/deploy-release.yml
+      config:
+        inputs:
+          - name: git-bits-service-release
+          - name: bits-service-release-version
+          - name: manifests
+        params:
+          MANIFEST_PATH: ../manifests/manifest-*.yml
+          BOSH_TARGET: {{bosh-target}}
+          BOSH_USERNAME: {{bosh-username}}
+          BOSH_PASSWORD: {{bosh-password}}
+          RELEASE_VERSION_FILE: ../bits-service-release-version/number
+          CF_USER: admin
+          CF_PASSWORD: admin
+          CF_DOMAIN: bosh-lite.com
+          BITS_DIRECTORY_KEY: {{cf-migration-s3-blobstore-bucket-name}}
+          BITS_AWS_REGION: {{cf-migration-s3-blobstore-region}}
+          AWS_ACCESS_KEY_ID: {{cf-migration-s3-blobstore-access-key-id}}
+          AWS_SECRET_ACCESS_KEY: {{cf-migration-s3-blobstore-secret-access-key}}
+          BLOBSTORE_TYPE: s3
+
+- name: verification-migration-backwards-bosh1
+  serial: true
+  plan:
+  - aggregate:
+    - get: git-cf-release
+      passed: [disable-BITS-SERVICE-bosh1]
+    - get: s3-cf-release
+      passed: [disable-BITS-SERVICE-bosh1]
+    - get: cf-release-version
+      passed: [disable-BITS-SERVICE-bosh1]
+    - get: cf-bosh1-lock
+      trigger: true
+      passed: [disable-BITS-SERVICE-bosh1]
+    - get: git-bits-service-release
+      passed: [disable-BITS-SERVICE-bosh1]
+  - task: run-bits-service-migration-tests
+    config:
+      platform: linux
+      image: docker:///flintstonecf/ci
+      inputs:
+        - name: git-bits-service-release
+      run:
+        path: git-bits-service-release/ci/scripts/run-errand.sh
+      params:
+        BOSH_TARGET: {{bosh-target}}
+        BOSH_USERNAME: {{bosh-username}}
+        BOSH_PASSWORD: {{bosh-password}}
+        DEPLOYMENT_NAME: cf-warden
+        ERRAND_NAME: bsmt_verification
+  - put: cf-bosh1-lock
+    params: { release: cf-bosh1-lock }
+
 
 # Infrastructure
 - name: recreate-bosh-lite-1
