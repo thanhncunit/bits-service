@@ -19,9 +19,9 @@ groups:
   - CATs-aws
   - deploy-cf-diego-aws
   - CATs-diego-aws
-  - deploy-cf-diego-aws-with-BITS
+  - enable-BITS-SERVICE-diego
   - CATs-diego-aws-with-bits
-  - deploy-cf-aws-with-BITS
+  - enable-BITS-SERVICE
   - release-cf2-aws-release-lock
   - release-cf1-aws-release-lock
 #  - bump-cc-in-capi-release
@@ -49,12 +49,12 @@ groups:
   - deploy-cf-aws
   - CATs-aws-with-bits
   - cf-release-done
-  - deploy-cf-aws-with-BITS
+  - enable-BITS-SERVICE
   - CATs-aws
   - release-cf1-aws-release-lock
   - deploy-cf-diego-aws
   - CATs-diego-aws
-  - deploy-cf-diego-aws-with-BITS
+  - enable-BITS-SERVICE-diego
   - CATs-diego-aws-with-bits
   - release-cf2-aws-release-lock
 - name: infrastructure
@@ -679,8 +679,8 @@ jobs:
       config:
         params:
           IAAS: aws
-          MANIFEST_STUBS: ci/manifests/cf-aws-network-1.yml
-    - task: upload-release-bosh-aws
+          MANIFEST_STUBS: ci/manifests/cf-aws-network-1.yml templates/s3.yml
+    - task: upload-cf-release-bosh-aws
       file: git-bits-service-release/ci/tasks/upload-release.yml
       config:
         inputs:
@@ -691,6 +691,17 @@ jobs:
           BOSH_USERNAME: {{aws-bosh-username}}
           BOSH_PASSWORD: {{aws-bosh-password}}
           RELEASE_FILE: ../s3-cf-release/cf-*.tgz
+    - task: upload-bits-release-bosh-aws
+      file: git-bits-service-release/ci/tasks/upload-release.yml
+      config:
+        inputs:
+          - name: git-bits-service-release
+          - name: s3-bits-service-release
+        params:
+          BOSH_TARGET: {{aws-bosh-target}}
+          BOSH_USERNAME: {{aws-bosh-username}}
+          BOSH_PASSWORD: {{aws-bosh-password}}
+          RELEASE_FILE: ../s3-bits-service-release/*.tgz
   - aggregate:
     - task: deploy-cf
       file: git-bits-service-release/ci/tasks/deploy-release.yml
@@ -760,7 +771,7 @@ jobs:
         ERRAND_NAME: acceptance_tests
         DEPLOYMENT_NAME: cf1
 
-- name: deploy-cf-aws-with-BITS
+- name: enable-BITS-SERVICE
   serial: true
   plan:
   - aggregate:
@@ -821,18 +832,18 @@ jobs:
   plan:
   - aggregate:
     - get: git-cf-release
-      passed: [deploy-cf-aws-with-BITS]
+      passed: [enable-BITS-SERVICE]
     - get: s3-cf-aws-manifest
-      passed: [deploy-cf-aws-with-BITS]
+      passed: [enable-BITS-SERVICE]
     - get: s3-cf-release
-      passed: [deploy-cf-aws-with-BITS]
+      passed: [enable-BITS-SERVICE]
     - get: cf-release-version
-      passed: [deploy-cf-aws-with-BITS]
+      passed: [enable-BITS-SERVICE]
     - get: cf1-aws-deployment-lock
       trigger: true
-      passed: [deploy-cf-aws-with-BITS]
+      passed: [enable-BITS-SERVICE]
     - get: git-bits-service-release
-      passed: [deploy-cf-aws-with-BITS]
+      passed: [enable-BITS-SERVICE]
   - task: run-cats
     attempts: 6
     config:
@@ -878,8 +889,8 @@ jobs:
       config:
         params:
           IAAS: aws
-          MANIFEST_STUBS: ci/manifests/cf-aws-network-2.yml ci/manifests/enable-diego-cats.yml
-    - task: upload-release-bosh-aws
+          MANIFEST_STUBS: ci/manifests/cf-aws-network-2.yml ci/manifests/enable-diego-cats.yml templates/s3.yml
+    - task: upload-cf-release-bosh-aws
       file: git-bits-service-release/ci/tasks/upload-release.yml
       config:
         inputs:
@@ -890,6 +901,17 @@ jobs:
           BOSH_USERNAME: {{aws-bosh-username}}
           BOSH_PASSWORD: {{aws-bosh-password}}
           RELEASE_FILE: ../s3-cf-release/cf-*.tgz
+    - task: upload-bits-release-bosh-aws
+      file: git-bits-service-release/ci/tasks/upload-release.yml
+      config:
+        inputs:
+          - name: git-bits-service-release
+          - name: s3-bits-service-release
+        params:
+          BOSH_TARGET: {{aws-bosh-target}}
+          BOSH_USERNAME: {{aws-bosh-username}}
+          BOSH_PASSWORD: {{aws-bosh-password}}
+          RELEASE_FILE: ../s3-bits-service-release/*.tgz
   - task: deploy-cf
     file: git-bits-service-release/ci/tasks/deploy-release.yml
     config:
@@ -990,7 +1012,7 @@ jobs:
         ERRAND_NAME: acceptance_tests
         DEPLOYMENT_NAME: cf2
 
-- name: deploy-cf-diego-aws-with-BITS
+- name: enable-BITS-SERVICE-diego
   serial: true
   plan:
   - aggregate:
@@ -1060,16 +1082,16 @@ jobs:
   plan:
   - aggregate:
     - get: git-cf-release
-      passed: [deploy-cf-diego-aws-with-BITS]
+      passed: [enable-BITS-SERVICE-diego]
     - get: s3-cf-release
-      passed: [deploy-cf-diego-aws-with-BITS]
+      passed: [enable-BITS-SERVICE-diego]
     - get: cf-release-version
-      passed: [deploy-cf-diego-aws-with-BITS]
+      passed: [enable-BITS-SERVICE-diego]
     - get: cf2-aws-deployment-lock
       trigger: true
-      passed: [deploy-cf-diego-aws-with-BITS]
+      passed: [enable-BITS-SERVICE-diego]
     - get: git-bits-service-release
-      passed: [deploy-cf-diego-aws-with-BITS]
+      passed: [enable-BITS-SERVICE-diego]
   - task: run-cats
     attempts: 6
     config:
