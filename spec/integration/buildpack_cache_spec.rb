@@ -5,7 +5,7 @@ describe 'buildpack_cache resource', type: :integration do
     @root_dir = Dir.mktmpdir
 
     config = {
-      buildpack_cache: {
+      droplets: {
         directory_key: 'directory-key',
         fog_connection: {
           provider: 'local',

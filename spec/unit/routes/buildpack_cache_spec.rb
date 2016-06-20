@@ -28,7 +28,7 @@ module BitsService
 
       let(:config) do
         {
-          buildpack_cache: {
+          droplets: {
             fog_connection: {
               provider: 'AWS',
               aws_access_key_id: 'fake_aws_key_id',

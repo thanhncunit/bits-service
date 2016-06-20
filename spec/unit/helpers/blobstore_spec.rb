@@ -20,10 +20,6 @@ module BitsService
               fog_connection: 'fog_connection',
               directory_key: 'directory_key'
             },
-            buildpack_cache: {
-              fog_connection: 'fog_connection',
-              directory_key: 'directory_key_bc'
-            },
             droplets: {
               fog_connection: 'fog_connection',
               directory_key: 'directory_key'
@@ -92,8 +88,8 @@ module BitsService
 
           it 'creates a blobstore client with the correct config' do
             expect(BitsService::Blobstore::ClientProvider).to receive(:provide).with(
-              options: config[:buildpack_cache],
-              directory_key: 'directory_key_bc',
+              options: config[:droplets],
+              directory_key: 'directory_key',
               root_dir: 'buildpack_cache',
             )
             subject.buildpack_cache_blobstore
@@ -102,7 +98,7 @@ module BitsService
           context 'when :directory_key is not present in config' do
             let(:config) do
               {
-                buildpack_cache: {
+                droplets: {
                   fog_connection: 'fog_connection'
                 }
               }
@@ -110,24 +106,24 @@ module BitsService
 
             it 'creates a blobstore client with the correct default directory key' do
               expect(BitsService::Blobstore::ClientProvider).to receive(:provide).with(
-                options: config[:buildpack_cache],
-                directory_key: 'buildpack_cache',
+                options: config[:droplets],
+                directory_key: 'droplets',
                 root_dir: 'buildpack_cache',
               )
               subject.buildpack_cache_blobstore
             end
           end
 
-          context 'when config is missing the :buildpack_cache key' do
+          context 'when config is missing the :droplets key' do
             let(:config) { Hash.new }
 
             it 'throws an exception' do
-              expect { subject.buildpack_cache_blobstore }.to raise_error(KeyError, /:buildpack_cache/)
+              expect { subject.buildpack_cache_blobstore }.to raise_error(KeyError, /:droplets/)
             end
           end
 
           context 'when config is missing the :fog_connection key' do
-            let(:config) { { buildpack_cache: {} } }
+            let(:config) { { droplets: {} } }
 
             it 'throws an exception' do
               expect { subject.buildpack_cache_blobstore }.to raise_error(KeyError, /:fog_connection/)

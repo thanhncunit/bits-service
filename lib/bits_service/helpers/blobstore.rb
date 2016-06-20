@@ -6,7 +6,7 @@ module BitsService
       end
 
       def buildpack_cache_blobstore
-        @buildpack_cache_blobstore ||= create_client(:buildpack_cache, 'buildpack_cache')
+        @buildpack_cache_blobstore ||= create_client(:droplets, 'buildpack_cache')
       end
 
       def droplet_blobstore
