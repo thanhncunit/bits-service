@@ -1000,6 +1000,9 @@ jobs:
         CF_PASSWORD: {{aws-cf2-password}}
         CF_DOMAIN: {{aws-cf2-domain}}
         CF_PUBLIC_IP: {{aws-cf2-public-ip}}
+    on_failure:
+      put: cf2-aws-deployment-lock
+      params: { release: cf2-aws-deployment-lock }
 
 - name: release-cf2-aws-release-lock
   plan:
