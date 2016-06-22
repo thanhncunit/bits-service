@@ -989,6 +989,7 @@ jobs:
       params: { release: cf2-aws-deployment-lock }
   - task: restart-diego-cells
     file: git-bits-service-release/ci/tasks/restart-bosh-job.yml
+    attempts: 5
     config:
       params:
         JOB_NAME: cell_z1
@@ -1097,6 +1098,7 @@ jobs:
         BLOBSTORE_TYPE: s3
   - task: restart-diego-cells
     file: git-bits-service-release/ci/tasks/restart-bosh-job.yml
+    attempts: 5
     config:
       params:
         JOB_NAME: cell_z1
