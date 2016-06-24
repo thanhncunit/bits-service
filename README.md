@@ -36,19 +36,7 @@ Currently, only local filesystem and S3 are supported.
 
 # Development
 
-## Pipeline
-
-The pipeline is publically visible at [flintstone.ci.cf-app.com](https://flintstone.ci.cf-app.com).
-
-To update the pipeline use `./ci/set-pipeline.sh`. 
-
-To run the pipeline the following configuration variables needs to be specified at `ci/config.yml`:
-
-```yaml
-bosh-target:
-bosh-username:
-bosh-password:
-```
+The CI config is in the [bits-service-ci](https://github.com/cloudfoundry-incubator/bits-service-ci) repo.
 
 ## Documentation
 
