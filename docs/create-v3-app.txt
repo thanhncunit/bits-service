@@ -1,0 +1,17 @@
+# Source: github.com/cloudfoundry/cloud_controller_ng/wiki/How-to-Create-an-App-Using-V3-of-the-CC-API
+
+title Create V3 App (without Bits-Service)
+
+cf->CC: POST /v3/apps
+CC-->cf: app_guid
+cf->CC: POST /v3/apps/:app_guid/packages
+CC-->cf: package_guid
+cf->cf: create package.zip
+cf->CC: POST /v3/packages/:package_guid/upload \n-F bits=@"package.zip"
+CC->Blobstore: [package]
+cf->CC: POST /v3/packages/:package_guid/droplets
+CC->stager
+cf->CC: PUT /v3/apps/:app_guid/droplets/current\n:droplet_guid
+cf->CC: cf create-route
+cf->CC: POST /v3/route_mappings\nroute_guid, :app_guid
+cf->CC: PUT /v3/apps/:app_guid/start
