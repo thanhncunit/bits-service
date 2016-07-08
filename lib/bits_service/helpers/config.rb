@@ -14,6 +14,10 @@ module BitsService
       def use_nginx?
         config[:nginx][:use_nginx]
       end
+
+      def public_endpoint
+        config[:public_endpoint]
+      end
     end
   end
 end

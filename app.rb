@@ -23,5 +23,6 @@ module BitsService
     use Routes::Droplets
     use Routes::AppStash
     use Routes::Packages
+    use Routes::Sign
   end
 end
