@@ -83,25 +83,17 @@ ssh-keygen -t rsa -f ./flintstone_id_rsa  -y > flintstone_id_rsa.pub
 ssh into the bare-metal box 'concourse' and execute:
 
 ```
-# bosh1
-# access to BOSH director
+# bosh1 access to BOSH director
 ip route add 192.168.50.0/24 via 10.155.248.181
 
 # access to bits-service VM
 ip route add 10.250.0.0/22 via 10.155.248.181
 
-# bosh2
-# access to BOSH director
+# bosh2 access to BOSH director
 ip route add 192.168.100.0/24 via 10.155.248.185
 
-# TODO We might need access to bits-service VM from bosh2, too:
-# ip route add 10.???.0.0/22 via 10.155.248.185
-
-# acceptance
-# access to BOSH director
+# access to the acceptance env. BOSH director
 ip route add 192.168.150.0/24 via 10.155.248.164
-
-# Concourse does NOT need access to bits-service VM on acceptance
 ```
 
 ## bosh1
