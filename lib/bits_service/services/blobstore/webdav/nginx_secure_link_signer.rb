@@ -31,7 +31,7 @@ module BitsService
         response_uri = make_request(uri: request_uri)
 
         signed_uri        = @public_uri.clone
-        signed_uri.scheme = 'https'
+        signed_uri.scheme = 'http'
         signed_uri.path   = response_uri.path
         signed_uri.query  = response_uri.query
         signed_uri.to_s
