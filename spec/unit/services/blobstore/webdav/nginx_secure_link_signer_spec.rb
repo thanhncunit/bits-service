@@ -88,7 +88,7 @@ module BitsService
 
         it 'returns the signed url from the response with the public endpoint host as the signed uri host' do
           signed_url = signer.sign_public_url(expires: expires, path: 'some/path')
-          expect(signed_url).to eq('https://public.example.com?valid-signing=some-md5-stuff')
+          expect(signed_url).to eq('http://public.example.com?valid-signing=some-md5-stuff')
         end
 
         context 'when public_path_prefix is configured' do
@@ -107,7 +107,7 @@ module BitsService
 
           it 'signs the url with an https scheme' do
             signed_url = signer.sign_public_url(expires: expires, path: 'some/path')
-            expect(signed_url).to eq('https://blobstore.example.com?valid-signing=some-md5-stuff')
+            expect(signed_url).to eq('http://blobstore.example.com?valid-signing=some-md5-stuff')
           end
         end
 
