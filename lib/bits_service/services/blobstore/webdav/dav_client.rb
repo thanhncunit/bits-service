@@ -120,6 +120,8 @@ module BitsService
       end
 
       def blob(key)
+        logger.info('Getting blob. Http Method: HEAD', url: url(key))
+
         response = with_error_handling { @client.head(url(key), header: @headers) }
         return DavBlob.new(httpmessage: response, key: partitioned_key(key), signer: @signer) if response.status == 200
 
@@ -180,7 +182,7 @@ module BitsService
       end
 
       def logger
-        @logger ||= Steno.logger('cc.blobstore.dav_client')
+        @logger ||= Steno.logger('bits_service.blobstore.dav_client')
       end
 
       def with_retries(retries, log_prefix, log_data)
