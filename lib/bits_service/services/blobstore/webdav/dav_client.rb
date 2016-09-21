@@ -120,7 +120,7 @@ module BitsService
       end
 
       def blob(key)
-        logger.info('Getting blob. Http Method: HEAD', url: url(key))
+        logger.info('Getting blob. Http Method: HEAD', url: url(key), header: @headers)
 
         response = with_error_handling { @client.head(url(key), header: @headers) }
         return DavBlob.new(httpmessage: response, key: partitioned_key(key), signer: @signer) if response.status == 200
