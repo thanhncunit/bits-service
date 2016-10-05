@@ -20,7 +20,7 @@ module BitsService
       end
 
       describe 'GET /sign' do
-        let(:time_of_request) { Time.mktime(2016) }
+        let(:time_of_request) { Time.new(2016, 1, 1, 0, 0, 0, "+00:00") }
         let(:time_of_expiry) { time_of_request.to_i + 3600 }
 
         it 'signs the passed URL' do
