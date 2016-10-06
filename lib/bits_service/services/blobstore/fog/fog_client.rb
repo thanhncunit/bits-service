@@ -3,9 +3,7 @@ require 'find'
 require 'fog'
 require 'mime-types'
 require 'bits_service/services/blobstore/base_client'
-require 'bits_service/services/blobstore/fog/directory'
 require 'bits_service/services/blobstore/fog/fog_blob'
-require 'bits_service/services/blobstore/fog/idempotent_directory'
 require 'bits_service/services/blobstore/fog/cdn'
 require 'bits_service/services/blobstore/errors'
 
@@ -109,11 +107,6 @@ module BitsService
         delete_files(files_for(partitioned_key(path)), DEFAULT_BATCH_SIZE)
       end
 
-      def delete(key)
-        blob_file = dir.files.head(partitioned_key(key))
-        blob_file.destroy if blob_file
-      end
-
       def delete_blob(blob)
         blob.file.destroy if blob.file
       end
@@ -164,11 +157,11 @@ module BitsService
       end
 
       def dir
-        @dir ||= directory.get_or_create
+        @dir ||= get_or_create_dir
       end
 
-      def directory
-        @directory ||= IdempotentDirectory.new(Directory.new(connection, @directory_key))
+      def get_or_create_dir
+        connection.directories.get(@directory_key, 'limit' => 1, max_keys: 1) || connection.directories.create(key: @directory_key, public: false)
       end
 
       def connection

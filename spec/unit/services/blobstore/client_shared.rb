@@ -57,12 +57,6 @@ shared_examples_for 'a blobstore client' do
     }.not_to raise_error
   end
 
-  it 'deletes the file by key in the blobstore' do
-    expect {
-      subject.delete('source-key')
-    }.not_to raise_error
-  end
-
   it 'deletes the blob' do
     expect {
       subject.delete_blob(deletable_blob)
@@ -70,6 +64,6 @@ shared_examples_for 'a blobstore client' do
   end
 
   it 'returns a blob object for a file by key' do
-    expect(subject.blob(key)).to be_a(BitsService::Blobstore::Blob)
+    expect(subject.blob(key)).to be
   end
 end
