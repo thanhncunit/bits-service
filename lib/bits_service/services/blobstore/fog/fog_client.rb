@@ -28,7 +28,7 @@ module BitsService
       end
 
       def exists?(key)
-        !file(key).nil?
+        !dir.files.head(partitioned_key(key)).nil?
       end
 
       def download_from_blobstore(source_key, destination_path, mode: nil)
@@ -85,11 +85,11 @@ module BitsService
       end
 
       def cp_file_between_keys(source_key, destination_key)
-        source_file = file(source_key)
+        source_file = dir.files.head(partitioned_key(source_key))
         raise FileNotFound if source_file.nil?
         source_file.copy(@directory_key, partitioned_key(destination_key))
 
-        dest_file = file(destination_key)
+        dest_file = dir.files.head(partitioned_key(destination_key))
 
         if local?
           dest_file.public = 'public-read'
@@ -110,16 +110,16 @@ module BitsService
       end
 
       def delete(key)
-        blob_file = file(key)
-        delete_file(blob_file) if blob_file
+        blob_file = dir.files.head(partitioned_key(key))
+        blob_file.destroy if blob_file
       end
 
       def delete_blob(blob)
-        delete_file(blob.file) if blob.file
+        blob.file.destroy if blob.file
       end
 
       def blob(key)
-        f = file(key)
+        f = dir.files.head(partitioned_key(key))
         FogBlob.new(f, @cdn) if f
       end
 
@@ -134,10 +134,6 @@ module BitsService
         end
       end
 
-      def delete_file(file)
-        file.destroy
-      end
-
       def delete_files(files_to_delete, page_size)
         if connection.respond_to?(:delete_multiple_objects)
           # AWS needs the file key to work; other providers with multiple delete
@@ -147,7 +143,7 @@ module BitsService
             connection.delete_multiple_objects(@directory_key, file_group.map(&:key))
           end
         else
-          files_to_delete.each { |f| delete_file(f) }
+          files_to_delete.each { |f| f.destroy }
         end
       end
 
@@ -165,10 +161,6 @@ module BitsService
         if batch.length > 0
           yield(batch)
         end
-      end
-
-      def file(key)
-        dir.files.head(partitioned_key(key))
       end
 
       def dir
