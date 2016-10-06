@@ -3,7 +3,7 @@ require_relative './base'
 module BitsService
   module Routes
     class Droplets < Base
-      put %r{/droplets/(.*/.*)} do |path|
+      put %r{^/droplets/(.*/.*)} do |path|
         begin
           uploaded_filepath = upload_params.upload_filepath('droplet')
           return create_from_upload(uploaded_filepath, path) if uploaded_filepath
@@ -17,7 +17,7 @@ module BitsService
         end
       end
 
-      get %r{/droplets/(.*/.*)} do |path|
+      get %r{^/droplets/(.*/.*)} do |path|
         blob = droplet_blobstore.blob(path)
         fail Errors::ApiError.new_from_details('NotFound', path) unless blob
 
@@ -32,7 +32,7 @@ module BitsService
         end
       end
 
-      delete %r{/droplets/(.*/.*)} do |path|
+      delete %r{^/droplets/(.*/.*)} do |path|
         blob = droplet_blobstore.blob(path)
         fail Errors::ApiError.new_from_details('NotFound', path) unless blob
         droplet_blobstore.delete_blob(blob)
