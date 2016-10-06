@@ -3,13 +3,13 @@ require_relative './base'
 module BitsService
   module Routes
     class Droplets < Base
-      put %r{/droplets/(.*/.*)} do |guid|
+      put %r{/droplets/(.*/.*)} do |path|
         begin
           uploaded_filepath = upload_params.upload_filepath('droplet')
-          return create_from_upload(uploaded_filepath, guid) if uploaded_filepath
+          return create_from_upload(uploaded_filepath, path) if uploaded_filepath
 
           source_guid = parsed_body['source_guid']
-          return create_as_duplicate(source_guid, guid) if source_guid
+          return create_as_duplicate(source_guid, path) if source_guid
 
           fail Errors::ApiError.new_from_details('InvalidDropletSource')
         ensure
@@ -17,9 +17,9 @@ module BitsService
         end
       end
 
-      get %r{/droplets/(.*/.*)} do |guid|
-        blob = droplet_blobstore.blob(guid)
-        fail Errors::ApiError.new_from_details('NotFound', guid) unless blob
+      get %r{/droplets/(.*/.*)} do |path|
+        blob = droplet_blobstore.blob(path)
+        fail Errors::ApiError.new_from_details('NotFound', path) unless blob
 
         if droplet_blobstore.local?
           if use_nginx?
@@ -32,19 +32,19 @@ module BitsService
         end
       end
 
-      delete %r{/droplets/(.*/.*)} do |guid|
-        blob = droplet_blobstore.blob(guid)
-        fail Errors::ApiError.new_from_details('NotFound', guid) unless blob
+      delete %r{/droplets/(.*/.*)} do |path|
+        blob = droplet_blobstore.blob(path)
+        fail Errors::ApiError.new_from_details('NotFound', path) unless blob
         droplet_blobstore.delete_blob(blob)
         status 204
       end
 
       private
 
-      def create_from_upload(uploaded_filepath, guid)
+      def create_from_upload(uploaded_filepath, path)
         fail Errors::ApiError.new_from_details('DropletUploadInvalid', 'a file must be provided') if uploaded_filepath.to_s == ''
 
-        droplet_blobstore.cp_to_blobstore(uploaded_filepath, guid)
+        droplet_blobstore.cp_to_blobstore(uploaded_filepath, path)
         status 201
       ensure
         FileUtils.rm_f(uploaded_filepath) if uploaded_filepath
