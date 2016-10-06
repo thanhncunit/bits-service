@@ -34,7 +34,7 @@ module BitsService
       def download_from_blobstore(source_key, destination_path, mode: nil)
         FileUtils.mkdir_p(File.dirname(destination_path))
         File.open(destination_path, 'wb') do |file|
-          (@cdn || files).get(partitioned_key(source_key)) do |*chunk|
+          (@cdn || dir.files).get(partitioned_key(source_key)) do |*chunk|
             file.write(chunk[0])
           end
           file.chmod(mode) if mode
@@ -54,7 +54,7 @@ module BitsService
           begin
             mime_type = MIME::Types.of(source_path).first.try(:content_type)
 
-            files.create(
+            dir.files.create(
               key: partitioned_key(destination_key),
               body: file,
               content_type: mime_type || 'application/zip',
@@ -125,10 +125,6 @@ module BitsService
 
       private
 
-      def files
-        dir.files
-      end
-
       def files_for(prefix)
         if connection.is_a? Fog::Storage::Local::Real
           directory = connection.directories.get(File.join(dir.key, prefix || ''))
@@ -172,7 +168,7 @@ module BitsService
       end
 
       def file(key)
-        files.head(partitioned_key(key))
+        dir.files.head(partitioned_key(key))
       end
 
       def dir
