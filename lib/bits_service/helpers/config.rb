@@ -16,6 +16,7 @@ module BitsService
       end
 
       def public_endpoint
+        fail "no public endpoint configured" unless config[:public_endpoint]
         config[:public_endpoint]
       end
     end
