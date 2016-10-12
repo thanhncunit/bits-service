@@ -57,7 +57,7 @@ module BitsService
         end
 
         context 'blobstore is local' do
-          let(:time_of_request) { Time.new(2016, 1, 1, 0, 0, 0, "+00:00") }
+          let(:time_of_request) { Time.new(2016, 1, 1, 0, 0, 0, '+00:00') }
           let(:signer) { double }
 
           before do
@@ -65,7 +65,7 @@ module BitsService
             allow(Time).to receive(:now).and_return(time_of_request)
 
             allow_any_instance_of(Routes::Sign).to receive(:signer).and_return(signer)
-            allow(signer).to receive(:sign).and_return "some_md5_sum"
+            allow(signer).to receive(:sign).and_return 'some_md5_sum'
           end
 
           it 'returns a generated package URL signed by the signer' do
@@ -83,7 +83,6 @@ module BitsService
             expect(last_response).to have_status_ok_and_body 'http://blobstore.example.com/signed/buildpacks/foo?md5=some_md5_sum&expires=1451610000'
           end
         end
-
       end
     end
   end

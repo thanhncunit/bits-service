@@ -5,9 +5,9 @@ require 'base64'
 module BitsService
   module Routes
     class Sign < Base
-      get('/sign/packages/:guid') { |guid| sign("packages", packages_blobstore, guid) }
-      get('/sign/buildpacks/:guid') {|guid| sign("buildpacks", buildpack_blobstore, guid)}
-      get(%r{^/sign/droplets/(.*/.*)}) { |path| sign("droplets", droplet_blobstore, path) }
+      get('/sign/packages/:guid') { |guid| sign('packages', packages_blobstore, guid) }
+      get('/sign/buildpacks/:guid') { |guid| sign('buildpacks', buildpack_blobstore, guid) }
+      get(%r{^/sign/droplets/(.*/.*)}) { |path| sign('droplets', droplet_blobstore, path) }
 
       private
 
