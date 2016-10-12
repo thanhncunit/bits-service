@@ -19,6 +19,7 @@ module BitsService
       end
 
       after do
+        headers 'X_VCAP_REQUEST_ID' => vcap_request_id if vcap_request_id
         logger.info(
           'request.ended',
           response_code: response.status,
