@@ -24,4 +24,5 @@ group :development do
   gem 'guard-bundler', require: false
   gem 'pry-byebug'
   gem 'machinist', '~> 1.0.6'
+  gem 'rb-readline'
 end
