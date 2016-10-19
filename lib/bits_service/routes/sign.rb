@@ -22,7 +22,8 @@ module BitsService
       def sign_local(path)
         expires = Time.now.utc.to_i + 3600
         signature = signer.sign("/signed/#{path}", expires)
-        "http://#{public_endpoint}/signed/#{path}?md5=#{signature}&expires=#{expires}"
+        raise 'Configuration for public_endpoint should start with http://' unless public_endpoint.start_with?('http://')
+        "#{public_endpoint}/signed/#{path}?md5=#{signature}&expires=#{expires}"
       end
 
       def sign_non_local(blobstore, identifier)
