@@ -15,7 +15,7 @@ module BitsService
   module Routes
     describe Sign do
       around(:each) do |example|
-        config_filepath = create_config_file({ public_endpoint: 'blobstore.example.com' })
+        config_filepath = create_config_file({ public_endpoint: 'http://blobstore.example.com' })
         BitsService::Environment.load_configuration(config_filepath)
 
         example.run
