@@ -1,2 +1,4 @@
 ci/config.yml
 .cache_rake_t
+.vscode
+.bundle
