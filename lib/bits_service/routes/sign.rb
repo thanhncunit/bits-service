@@ -27,9 +27,7 @@ module BitsService
       end
 
       def sign_non_local(blobstore, identifier)
-        blob = blobstore.blob(identifier)
-        raise Errors::ApiError.new_from_details('NotFound', identifier) unless blob
-        blob.public_download_url
+        blobstore.public_download_url(identifier)
       end
 
       def signer

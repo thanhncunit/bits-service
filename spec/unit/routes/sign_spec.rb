@@ -5,12 +5,6 @@ RSpec::Matchers.define :have_status_ok_and_body do |expected|
   match { |actual| actual.ok? == true && actual.body == expected }
 end
 
-def stub(blobstore, identifier, public_url)
-  blob = double
-  allow(blobstore).to receive(:blob).with(identifier).and_return(blob)
-  allow(blob).to receive(:public_download_url).and_return(public_url)
-end
-
 module BitsService
   module Routes
     describe Sign do
@@ -38,19 +32,19 @@ module BitsService
           end
 
           it 'returns the blob\'s public package download url' do
-            stub(blobstore, 'bar', 'http://blobstore.example.com/a-signed-package-url')
+            allow(blobstore).to receive(:public_download_url).with('bar').and_return('http://blobstore.example.com/a-signed-package-url')
             get '/sign/packages/bar'
             expect(last_response).to have_status_ok_and_body 'http://blobstore.example.com/a-signed-package-url'
           end
 
           it 'returns the blob\'s public droplet download url' do
-            stub(blobstore, '1234/5678', 'http://blobstore.example.com/a-signed-droplet-url')
+            allow(blobstore).to receive(:public_download_url).with('1234/5678').and_return('http://blobstore.example.com/a-signed-droplet-url')
             get '/sign/droplets/1234/5678'
             expect(last_response).to have_status_ok_and_body 'http://blobstore.example.com/a-signed-droplet-url'
           end
 
           it 'returns the blob\'s public buildpack download url' do
-            stub(blobstore, 'foo', 'http://blobstore.example.com/a-signed-buildpack-url')
+            allow(blobstore).to receive(:public_download_url).with('foo').and_return('http://blobstore.example.com/a-signed-buildpack-url')
             get '/sign/buildpacks/foo'
             expect(last_response).to have_status_ok_and_body 'http://blobstore.example.com/a-signed-buildpack-url'
           end

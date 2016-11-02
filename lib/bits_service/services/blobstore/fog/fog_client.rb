@@ -118,6 +118,10 @@ module BitsService
         delete_file(blob.file) if blob.file
       end
 
+      def public_download_url(key)
+        dir.files.get_url(partitioned_key(key), Time.now.utc.to_i + 3600)
+      end
+
       def blob(key)
         f = file(key)
         FogBlob.new(f, @cdn) if f
