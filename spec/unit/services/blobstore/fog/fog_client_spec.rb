@@ -657,6 +657,25 @@ module BitsService
           end
         end
 
+        describe '#delete' do
+          it 'deletes the file' do
+            path = File.join(local_dir, 'empty_file')
+            FileUtils.touch(path)
+
+            client.cp_to_blobstore(path, 'abcdef123456')
+            expect(client.exists?('abcdef123456')).to be true
+            client.delete('abcdef123456')
+            expect(client.exists?('abcdef123456')).to be false
+          end
+
+          it "should be ok if the file doesn't exist" do
+            expect(directory.files).to have(0).items
+            expect {
+              client.delete('non-existent-file')
+            }.to_not raise_error
+          end
+        end
+
         describe '#delete_blob' do
           it "deletes the blob's file" do
             path = File.join(local_dir, 'empty_file')

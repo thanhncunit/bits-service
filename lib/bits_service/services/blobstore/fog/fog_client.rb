@@ -3,7 +3,9 @@ require 'find'
 require 'fog'
 require 'mime-types'
 require 'bits_service/services/blobstore/base_client'
+require 'bits_service/services/blobstore/fog/directory'
 require 'bits_service/services/blobstore/fog/fog_blob'
+require 'bits_service/services/blobstore/fog/idempotent_directory'
 require 'bits_service/services/blobstore/fog/cdn'
 require 'bits_service/services/blobstore/errors'
 
@@ -26,13 +28,13 @@ module BitsService
       end
 
       def exists?(key)
-        !dir.files.head(partitioned_key(key)).nil?
+        !file(key).nil?
       end
 
       def download_from_blobstore(source_key, destination_path, mode: nil)
         FileUtils.mkdir_p(File.dirname(destination_path))
         File.open(destination_path, 'wb') do |file|
-          (@cdn || dir.files).get(partitioned_key(source_key)) do |*chunk|
+          (@cdn || files).get(partitioned_key(source_key)) do |*chunk|
             file.write(chunk[0])
           end
           file.chmod(mode) if mode
@@ -52,7 +54,7 @@ module BitsService
           begin
             mime_type = MIME::Types.of(source_path).first.try(:content_type)
 
-            dir.files.create(
+            files.create(
               key: partitioned_key(destination_key),
               body: file,
               content_type: mime_type || 'application/zip',
@@ -83,11 +85,11 @@ module BitsService
       end
 
       def cp_file_between_keys(source_key, destination_key)
-        source_file = dir.files.head(partitioned_key(source_key))
+        source_file = file(source_key)
         raise FileNotFound if source_file.nil?
         source_file.copy(@directory_key, partitioned_key(destination_key))
 
-        dest_file = dir.files.head(partitioned_key(destination_key))
+        dest_file = file(destination_key)
 
         if local?
           dest_file.public = 'public-read'
@@ -107,16 +109,25 @@ module BitsService
         delete_files(files_for(partitioned_key(path)), DEFAULT_BATCH_SIZE)
       end
 
+      def delete(key)
+        blob_file = file(key)
+        delete_file(blob_file) if blob_file
+      end
+
       def delete_blob(blob)
-        blob.file.destroy if blob.file
+        delete_file(blob.file) if blob.file
       end
 
       def blob(key)
-        f = dir.files.head(partitioned_key(key))
+        f = file(key)
         FogBlob.new(f, @cdn) if f
       end
 
       private
+
+      def files
+        dir.files
+      end
 
       def files_for(prefix)
         if connection.is_a? Fog::Storage::Local::Real
@@ -125,6 +136,10 @@ module BitsService
         else
           connection.directories.get(dir.key, prefix: prefix).files
         end
+      end
+
+      def delete_file(file)
+        file.destroy
       end
 
       def delete_files(files_to_delete, page_size)
@@ -136,7 +151,7 @@ module BitsService
             connection.delete_multiple_objects(@directory_key, file_group.map(&:key))
           end
         else
-          files_to_delete.each { |f| f.destroy }
+          files_to_delete.each { |f| delete_file(f) }
         end
       end
 
@@ -156,12 +171,16 @@ module BitsService
         end
       end
 
-      def dir
-        @dir ||= get_or_create_dir
+      def file(key)
+        files.head(partitioned_key(key))
       end
 
-      def get_or_create_dir
-        connection.directories.get(@directory_key, 'limit' => 1, max_keys: 1) || connection.directories.create(key: @directory_key, public: false)
+      def dir
+        @dir ||= directory.get_or_create
+      end
+
+      def directory
+        @directory ||= IdempotentDirectory.new(Directory.new(connection, @directory_key))
       end
 
       def connection

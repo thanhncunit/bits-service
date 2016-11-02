@@ -1,6 +1,6 @@
 module BitsService
   module Blobstore
-    class FogBlob
+    class FogBlob < Blob
       attr_reader :file
 
       def initialize(file, cdn)
