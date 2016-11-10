@@ -158,6 +158,7 @@ Vagrant.configure('2') do |config|
     v.cpus = 7  # <------------------------------------------------- add this line
     # To use a different IP address for the bosh-lite director, uncomment this line:
     # override.vm.network :private_network, ip: '192.168.59.4', id: :local
+    config.vm.network :private_network, ip: '192.168.150.4', id: :local
   end
   ...
 ```
