@@ -119,7 +119,7 @@ ip route add 10.250.0.0/16 via 192.168.100.4
 
 cd ~/workspace/bosh-lite
 vagrant ssh
-ip route add 10.155.248.0/24 via 192.168.100.1 dev eth1
+sudo ip route add 10.155.248.0/24 via 192.168.100.1 dev eth1
 ```
 
 ## acceptance
@@ -132,7 +132,7 @@ ip route add 10.250.0.0/16 via 192.168.150.4
 
 cd ~/workspace/bosh-lite
 vagrant ssh
-ip route add 10.155.248.0/24 via 192.168.150.1 dev eth1
+sudo ip route add 10.155.248.0/24 via 192.168.150.1 dev eth1
 ```
 
 # Update bosh-lite
@@ -143,7 +143,7 @@ In order to update bosh-lite or re-create the vagrant vm do:
 cd workspace/bosh-lite
 vagrant destroy
 git pull
-vagrant box Update
+vagrant box update
 vim Vagrantfile
 ```
 
