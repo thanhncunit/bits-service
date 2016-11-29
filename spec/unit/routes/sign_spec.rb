@@ -23,6 +23,7 @@ module BitsService
         allow_any_instance_of(Routes::Sign).to receive(:packages_blobstore).and_return(blobstore)
         allow_any_instance_of(Routes::Sign).to receive(:droplet_blobstore).and_return(blobstore)
         allow_any_instance_of(Routes::Sign).to receive(:buildpack_blobstore).and_return(blobstore)
+        allow_any_instance_of(Routes::Sign).to receive(:buildpack_cache_blobstore).and_return(blobstore)
       end
 
       describe 'GET /sign/.*' do
@@ -47,6 +48,12 @@ module BitsService
             allow(blobstore).to receive(:public_download_url).with('foo').and_return('http://blobstore.example.com/a-signed-buildpack-url')
             get '/sign/buildpacks/foo'
             expect(last_response).to have_status_ok_and_body 'http://blobstore.example.com/a-signed-buildpack-url'
+          end
+
+          it 'returns the blob\'s public buildpack_cache entry download url' do
+            allow(blobstore).to receive(:public_download_url).with('some_guid/some_file').and_return('http://blobstore.example.com/a-signed-buildpack_cache-url')
+            get '/sign/buildpack_cache/entries/some_guid/some_file'
+            expect(last_response).to have_status_ok_and_body 'http://blobstore.example.com/a-signed-buildpack_cache-url'
           end
         end
 
@@ -75,6 +82,11 @@ module BitsService
           it 'returns a generated buildpack URL signed by the signer' do
             get '/sign/buildpacks/foo'
             expect(last_response).to have_status_ok_and_body 'http://blobstore.example.com/signed/buildpacks/foo?md5=some_md5_sum&expires=1451610000'
+          end
+
+          it 'returns a generated buildpack_cache URL signed by the signer' do
+            get '/sign/buildpack_cache/entries/foo/bar'
+            expect(last_response).to have_status_ok_and_body 'http://blobstore.example.com/signed/buildpack_cache/entries/foo/bar?md5=some_md5_sum&expires=1451610000'
           end
         end
       end

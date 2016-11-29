@@ -7,6 +7,7 @@ module BitsService
     class Sign < Base
       get('/sign/packages/:guid') { |guid| sign('packages', packages_blobstore, guid) }
       get('/sign/buildpacks/:guid') { |guid| sign('buildpacks', buildpack_blobstore, guid) }
+      get(%r{^/sign/buildpack_cache/entries/(.*/.*)}) { |path| sign('buildpack_cache/entries', buildpack_cache_blobstore, path) }
       get(%r{^/sign/droplets/(.*/.*)}) { |path| sign('droplets', droplet_blobstore, path) }
 
       private
