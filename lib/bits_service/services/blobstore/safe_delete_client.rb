@@ -31,7 +31,8 @@ module BitsService
         :delete_blob,
         :download_uri,
         :blob,
-        :public_download_url
+        :public_download_url,
+        :public_upload_url
     end
   end
 end

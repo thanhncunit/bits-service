@@ -122,6 +122,12 @@ module BitsService
         dir.files.get_url(partitioned_key(key), Time.now.utc.to_i + 3600)
       end
 
+      def public_upload_url(key)
+
+        connection.put_object_url(@directory_key, partitioned_key(key), Time.now.utc.to_i + 3600)
+        # dir.files.get_url(partitioned_key(key), Time.now.utc.to_i + 3600)
+      end
+
       def blob(key)
         f = file(key)
         FogBlob.new(f, @cdn) if f

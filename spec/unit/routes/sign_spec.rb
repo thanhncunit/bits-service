@@ -55,6 +55,12 @@ module BitsService
             get '/sign/buildpack_cache/entries/some_guid/some_file'
             expect(last_response).to have_status_ok_and_body 'http://blobstore.example.com/a-signed-buildpack_cache-url'
           end
+
+          it "returns the blob's public package upload url" do
+            allow(blobstore).to receive(:public_upload_url).with('bar').and_return('http://blobstore.example.com/a-signed-package-url-for-put')
+            get '/sign/packages/bar?verb=put'
+            expect(last_response).to have_status_ok_and_body 'http://blobstore.example.com/a-signed-package-url-for-put'
+          end
         end
 
         context 'blobstore is local' do
