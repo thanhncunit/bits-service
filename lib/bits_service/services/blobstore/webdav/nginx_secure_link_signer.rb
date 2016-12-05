@@ -16,7 +16,7 @@ module BitsService
       end
 
       def sign_internal_url(expires:, path:)
-        request_uri  = uri(expires: expires, path: File.join([@internal_path_prefix, path].compact))
+        request_uri  = uri(expires: expires, path_to_be_signed: File.join([@internal_path_prefix, path].compact), sign_prefix: '/sign')
         response_uri = make_request(uri: request_uri)
 
         signed_uri        = @internal_uri.clone
@@ -27,7 +27,7 @@ module BitsService
       end
 
       def sign_public_url(expires:, path:)
-        request_uri  = uri(expires: expires, path: File.join([@public_path_prefix, path].compact))
+        request_uri  = uri(expires: expires, path_to_be_signed: File.join([@public_path_prefix, path].compact), sign_prefix: '/sign')
         response_uri = make_request(uri: request_uri)
 
         signed_uri        = @public_uri.clone
@@ -38,7 +38,7 @@ module BitsService
       end
 
       def sign_public_upload_url(expires:, path:)
-        request_uri  = uri_for_upload(expires: expires, path: File.join([@public_path_prefix, path].compact))
+        request_uri  = uri(expires: expires, path_to_be_signed: File.join([@public_path_prefix, path].compact), sign_prefix: '/sign_for_put')
         response_uri = make_request(uri: request_uri)
 
         signed_uri        = @public_uri.clone
@@ -58,23 +58,12 @@ module BitsService
         URI(response.content)
       end
 
-      def uri(expires:, path:)
+      def uri(expires:, path_to_be_signed:, sign_prefix:)
         uri       = @internal_uri.clone
-        uri.path  = '/sign'
+        uri.path  = sign_prefix
         uri.query = {
           expires: expires,
-          path:    File.join(['/', path])
-        }.to_query
-
-        uri.to_s
-      end
-
-      def uri_for_upload(expires:, path:)
-        uri       = @internal_uri.clone
-        uri.path  = '/sign_for_put'
-        uri.query = {
-          expires: expires,
-          path:    File.join(['/', path])
+          path:    File.join(['/', path_to_be_signed])
         }.to_query
 
         uri.to_s
