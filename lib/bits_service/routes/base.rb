@@ -28,7 +28,7 @@ module BitsService
       end
 
       error Errors::ApiError do |error|
-        logger.error('error', description: error.message, code: error.code)
+        logger.error('error', description: error.message, code: error.code, stack_trace: error.backtrace)
         halt error.response_code, { description: error.message, code: error.code, vcap_request_id: vcap_request_id }.to_json
       end
 
