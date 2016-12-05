@@ -37,6 +37,17 @@ module BitsService
         signed_uri.to_s
       end
 
+      def sign_public_upload_url(expires:, path:)
+        request_uri  = uri_for_upload(expires: expires, path: File.join([@public_path_prefix, path].compact))
+        response_uri = make_request(uri: request_uri)
+
+        signed_uri        = @public_uri.clone
+        signed_uri.scheme = 'http'
+        signed_uri.path   = response_uri.path
+        signed_uri.query  = response_uri.query
+        signed_uri.to_s
+      end
+
       private
 
       def make_request(uri:)
@@ -50,6 +61,17 @@ module BitsService
       def uri(expires:, path:)
         uri       = @internal_uri.clone
         uri.path  = '/sign'
+        uri.query = {
+          expires: expires,
+          path:    File.join(['/', path])
+        }.to_query
+
+        uri.to_s
+      end
+
+      def uri_for_upload(expires:, path:)
+        uri       = @internal_uri.clone
+        uri.path  = '/sign_for_put'
         uri.query = {
           expires: expires,
           path:    File.join(['/', path])

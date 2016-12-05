@@ -123,6 +123,10 @@ module BitsService
         @signer.sign_public_url(path: partitioned_key(key), expires: Time.now.utc.to_i + 3600)
       end
 
+      def public_upload_url(key)
+        @signer.sign_public_upload_url(path: partitioned_key(key), expires: Time.now.utc.to_i + 3600)
+      end
+
       def blob(key)
         logger.info('Getting blob. Http Method: HEAD', url: url(key), header: @headers)
 

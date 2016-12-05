@@ -21,6 +21,11 @@ module BitsService
         @signer.sign_public_url(path: @key, expires: expires)
       end
 
+      def public_upload_url
+        expires = Time.now.utc.to_i + 3600
+        @signer.sign_public_upload_url(path: @key, expires: expires)
+      end
+
       def attributes(*keys)
         @attributes ||= {
           etag:           @httpmessage.headers['ETag'],
