@@ -9,9 +9,8 @@ apt-get install git vim unzip wget
 
 #
 # Vagrant
-#
-wget https://releases.hashicorp.com/vagrant/1.8.1/vagrant_1.8.1_x86_64.deb
-dpkg -i vagrant_1.8.1_x86_64.deb
+# Download latest debian package from https://www.vagrantup.com/downloads.html
+dpkg -i vagrant_xyz_x86_64.deb
 
 #
 # VirtualBox
