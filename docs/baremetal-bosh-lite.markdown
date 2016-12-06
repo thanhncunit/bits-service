@@ -24,14 +24,14 @@ wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key a
 
 # install
 apt-get update
-apt-get install virtualbox-5.0
+apt-get install virtualbox-5.x
 
 #
 # bosh-lite
 #
 
-# get the stemcell
-wget https://s3.amazonaws.com/bosh-warden-stemcells/bosh-stemcell-3147-warden-boshlite-ubuntu-trusty-go_agent.tgz
+# get the latest stemcell
+wget --content-disposition https://bosh.io/d/stemcells/bosh-warden-boshlite-ubuntu-trusty-go_agent
 
 # get the latest source
 mkdir -p workspace
@@ -40,8 +40,9 @@ cd bosh-lite
 
 # start the VM
 vagrant up
-bin/add-route
+
 # Make sure bin/add-route actually routes to the correct IP, e.g. for acceptance it's 192.168.150.4
+bin/add-route
 
 #
 # Ruby
@@ -56,11 +57,11 @@ echo 'gem: --no-rdoc --no-ri' >> ~/.gemrc
 gem install bundler bosh_cli
 
 #
-# spiff
+# spruce
 #
-wget https://github.com/cloudfoundry-incubator/spiff/releases/download/v1.0.7/spiff_linux_amd64.zip
-unzip spiff_linux_amd64.zip
-mv spiff /usr/local/bin/
+wget https://github.com/geofffranks/spruce/releases/download/x.y.z/spruce-linux-amd64
+chmod +x spruce-linux-amd64
+mv spruce-linux-amd64 /usr/local/bin/spruce
 ```
 
 # Wire concourse and bosh-lite
@@ -105,7 +106,7 @@ ip route add 10.250.0.0/16 via 192.168.50.4
 
 cd ~/workspace/bosh-lite
 vagrant ssh
-ip route add 10.155.248.0/24 via 192.168.50.1 dev eth1
+sudo ip route add 10.155.248.0/24 via 192.168.50.1 dev eth1
 ```
 
 ## bosh2
@@ -172,6 +173,8 @@ bosh create user <user>
 # Install cf
 
 ```
-wget --output-document=cf-cli.deb 'https://cli.run.pivotal.io/stable?release=debian64&version=6.15.0&source=github-rel'
-dpkg -i cf-cli.deb
+wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -
+echo "deb http://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
+sudo apt-get update
+sudo apt-get install cf-cli
 ```
