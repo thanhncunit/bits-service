@@ -7,7 +7,7 @@ Changes are made in the `source` directory.
 To see changes locally, run:
 
 ```
-bundle execute middleman server
+bundle exec middleman server
 ```
 
 To publish changes to the documentation, run the `deploy.sh` script.
