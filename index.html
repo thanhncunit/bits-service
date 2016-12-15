@@ -113,19 +113,139 @@
     <div class="page-wrapper">
       <div class="dark-box"></div>
       <div class="content">
-        <h1 id="introduction">Introduction</h1>
+        <h1 id="packages">Packages</h1>
 
-<p>TODO</p>
-
-<h1 id="api">API</h1>
-
-<p>TODO</p>
+<h2 id="uploading-a-package">Uploading a package</h2>
 
 <blockquote>
-<p>Example:</p>
+<p>Request:</p>
 </blockquote>
-<pre class="highlight shell"><code>curl something
+<pre class="highlight shell"><code>curl -X PUT <span class="s1">'http://internal.example.com/packages/:guid'</span> -d @package-file.zip
 </code></pre>
+<blockquote>
+<p>Response:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 201 Created
+</code></pre>
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">PUT /packages/:guid</code></p>
+
+<p>where <code class="prettyprint">:guid</code> is the package&rsquo;s GUID.</p>
+
+<h3 id="request-body">Request Body</h3>
+
+<p><code class="prettyprint">package: &lt;formfile&gt;</code></p>
+
+<h3 id="access">Access</h3>
+
+<p>Internal endpoint only</p>
+
+<h2 id="downloading-a-package">Downloading a Package</h2>
+
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre class="highlight shell"><code>curl -X GET <span class="s1">'http://internal.example.com/packages/:guid'</span>
+</code></pre>
+<blockquote>
+<p>Example response when backend is S3:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 302 Found
+</code></pre>
+<blockquote>
+<p>Example response when backend is local:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 200 OK
+
+&lt;file contents&gt;
+</code></pre>
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET /packages/:guid</code></p>
+
+<p>where <code class="prettyprint">:guid</code> is the package&rsquo;s GUID.</p>
+
+<h3 id="access">Access</h3>
+
+<p>Internal endpoint only</p>
+
+<h2 id="deleting-a-package">Deleting a Package</h2>
+
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre class="highlight shell"><code>curl -X DELETE <span class="s1">'http://internal.example.com/packages/:guid'</span>
+</code></pre>
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 200 OK
+</code></pre>
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">DELETE /packages/:guid</code></p>
+
+<p>where <code class="prettyprint">:guid</code> is the package&rsquo;s GUID.</p>
+
+<h3 id="access">Access</h3>
+
+<p>Internal endpoint only</p>
+
+<h1 id="droplets">Droplets</h1>
+
+<h1 id="buildpacks">Buildpacks</h1>
+
+<h1 id="buildpack-cache-entries">Buildpack Cache Entries</h1>
+
+<h1 id="app-stash">App Stash</h1>
+
+<h1 id="signed-urls">Signed URLs</h1>
+
+<h2 id="signing-a-url">Signing a URL</h2>
+
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre class="highlight shell"><code>curl <span class="s1">'http://username:password@internal.example.com/sign/packages/bdf47b84-1349-4abd-9561-5004858dfa05?verb=put'</span>
+</code></pre>
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre class="highlight plaintext"><code>HTTP/1.1 200 OK
+
+https://ci-bits-service-blobs.s3-eu-west-1.amazonaws.com/bd/f4/bdf47b84-1349-4abd-9561-5004858dfa05?X-Amz-Expires=3600&amp;X-Amz-Date=20161202T152037Z&amp;X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAJ22EGSN2MKAXL3MA/20161202/eu-west-1/s3/aws4_request&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=b8c79895f0cfa7e38ee2585ae9f92aa56fc66601daf272f637aa04e7b70e8cc2
+</code></pre>
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET /sign/:path</code></p>
+
+<p>where <code class="prettyprint">:path</code> is the URL path of the signed entity.</p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code class="prettyprint">verb</code></td>
+<td><code class="prettyprint">GET</code></td>
+<td>Defines the verb that can be used in association with the signed URL. Either <code class="prettyprint">GET</code> or <code class="prettyprint">PUT</code>.</td>
+</tr>
+</tbody></table>
+
+<h3 id="access">Access</h3>
+
+<p>Internal endpoint only</p>
+
+<aside class="notice">
+Signing URL does not imply that the resource exists.
+</aside>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">
