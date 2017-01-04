@@ -1,5 +1,6 @@
-ci/config.yml
-.cache_rake_t
-.vscode
 .bundle
+.cache_rake_t
+.rake_t_cache
+.vscode
 api-doc/build
+ci/config.yml

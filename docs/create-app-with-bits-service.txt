@@ -11,7 +11,7 @@ loop each SHA
 end
 Bits-Service-->CC:
 
-CC-->cf: files to upload
+CC-->cf: files found
 cf->cf: create ZIP with missing bits
 cf->CC: POST /v2/apps/:guid/bits [zip file + SHAs known to CC]
 
