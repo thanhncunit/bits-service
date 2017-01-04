@@ -115,15 +115,17 @@
       <div class="content">
         <h1 id="packages">Packages</h1>
 
-<h2 id="uploading-a-package">Uploading a package</h2>
+<p>A package are the files that make up an application from the developer&rsquo;s point of view (source code).</p>
+
+<h2 id="uploading-a-package">Uploading a Package</h2>
 
 <blockquote>
-<p>Request:</p>
+<p>Example request:</p>
 </blockquote>
-<pre class="highlight shell"><code>curl -X PUT <span class="s1">'http://internal.example.com/packages/:guid'</span> -d @package-file.zip
+<pre class="highlight shell"><code>curl -X PUT <span class="s1">'http://internal.example.com/packages/c33e184b-e698-4290-952e-4047601e4627'</span> -d @package-file.zip
 </code></pre>
 <blockquote>
-<p>Response:</p>
+<p>Example response:</p>
 </blockquote>
 <pre class="highlight shell"><code>HTTP/1.1 201 Created
 </code></pre>
@@ -137,6 +139,8 @@
 
 <p><code class="prettyprint">package: &lt;formfile&gt;</code></p>
 
+<p>If the body is not a file upload, but contains a <code class="prettyprint">:source_guid</code>, its value is treated as <code class="prettyprint">:guid</code> and an attempt is made to copy the package from the one identified by the value of <code class="prettyprint">:source_guid</code>.</p>
+
 <h3 id="access">Access</h3>
 
 <p>Internal endpoint only</p>
@@ -146,7 +150,7 @@
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre class="highlight shell"><code>curl -X GET <span class="s1">'http://internal.example.com/packages/:guid'</span>
+<pre class="highlight shell"><code>curl -X GET <span class="s1">'http://internal.example.com/packages/c33e184b-e698-4290-952e-4047601e4627'</span>
 </code></pre>
 <blockquote>
 <p>Example response when backend is S3:</p>
@@ -175,12 +179,12 @@
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre class="highlight shell"><code>curl -X DELETE <span class="s1">'http://internal.example.com/packages/:guid'</span>
+<pre class="highlight shell"><code>curl -X DELETE <span class="s1">'http://internal.example.com/packages/c33e184b-e698-4290-952e-4047601e4627'</span>
 </code></pre>
 <blockquote>
 <p>Example response:</p>
 </blockquote>
-<pre class="highlight shell"><code>HTTP/1.1 200 OK
+<pre class="highlight shell"><code>HTTP/1.1 204 No Content
 </code></pre>
 <h3 id="http-request">HTTP Request</h3>
 
@@ -194,13 +198,417 @@
 
 <h1 id="droplets">Droplets</h1>
 
+<p>A droplet is the result of staging an application package. It contains the bits produced by the buildpack, typically application code and dependencies.</p>
+
+<h2 id="uploading-a-droplet">Uploading a Droplet</h2>
+
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre class="highlight shell"><code>curl -X PUT <span class="s1">'http://internal.example.com/droplets/c33e184b-e698-4290-952e-4047601e4627/b1d2a97c5033319632e65beba49dd92da18c1d20'</span> -d @droplet-file
+</code></pre>
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 201 Created
+</code></pre>
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">PUT /droplets/:guid/:checksum</code></p>
+
+<p>where <code class="prettyprint">:guid</code> is the droplet&rsquo;s GUID and <code class="prettyprint">:checksum</code> is its checksum.</p>
+
+<h3 id="request-body">Request Body</h3>
+
+<p><code class="prettyprint">droplet: &lt;formfile&gt;</code></p>
+
+<p>If the body is not a file upload, but contains a <code class="prettyprint">:source_guid</code>, its value is treated as <code class="prettyprint">:guid</code> and an attempt is made to copy the droplet from the one identified by the value of <code class="prettyprint">:source_guid</code>.</p>
+
+<h3 id="access">Access</h3>
+
+<p>Internal endpoint only</p>
+
+<h2 id="downloading-a-droplet">Downloading a Droplet</h2>
+
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre class="highlight shell"><code>curl -X GET <span class="s1">'http://internal.example.com/droplets/c33e184b-e698-4290-952e-4047601e4627/b1d2a97c5033319632e65beba49dd92da18c1d20'</span>
+</code></pre>
+<blockquote>
+<p>Example response when backend is S3:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 302 Found
+</code></pre>
+<blockquote>
+<p>Example response when backend is local:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 200 OK
+
+&lt;file contents&gt;
+</code></pre>
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET /droplets/:guid/:checksum</code></p>
+
+<p>where <code class="prettyprint">:guid</code> is the droplet&rsquo;s GUID and <code class="prettyprint">:checksum</code> is its checksum.</p>
+
+<h3 id="access">Access</h3>
+
+<p>Internal endpoint only</p>
+
+<h2 id="deleting-a-droplet">Deleting a Droplet</h2>
+
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre class="highlight shell"><code>curl -X DELETE <span class="s1">'http://internal.example.com/droplets/c33e184b-e698-4290-952e-4047601e4627/b1d2a97c5033319632e65beba49dd92da18c1d20'</span>
+</code></pre>
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 204 No Content
+</code></pre>
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">DELETE /droplets/:guid/:checksum</code></p>
+
+<p>where <code class="prettyprint">:guid</code> is the droplet&rsquo;s GUID and <code class="prettyprint">:checksum</code> is its checksum.</p>
+
+<h3 id="access">Access</h3>
+
+<p>Internal endpoint only</p>
+
 <h1 id="buildpacks">Buildpacks</h1>
+
+<p>A buildpack provides the components necessary to run an application, e.g. the compiler or interpreter for the source code of an app, and often times also an application framework.</p>
+
+<h2 id="uploading-a-buildpack">Uploading a Buildpack</h2>
+
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre class="highlight shell"><code>curl -X PUT <span class="s1">'http://internal.example.com/buildpacks/c33e184b-e698-4290-952e-4047601e4627'</span> -d @buildpack-file
+</code></pre>
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 201 Created
+</code></pre>
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">PUT /buildpacks/:guid</code></p>
+
+<p>where <code class="prettyprint">:guid</code> is the buildpack&rsquo;s GUID.</p>
+
+<h3 id="request-body">Request Body</h3>
+
+<p><code class="prettyprint">buildpack: &lt;formfile&gt;</code></p>
+
+<h3 id="access">Access</h3>
+
+<p>Internal endpoint only</p>
+
+<h2 id="downloading-a-buildpack">Downloading a Buildpack</h2>
+
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre class="highlight shell"><code>curl -X GET <span class="s1">'http://internal.example.com/buildpacks/c33e184b-e698-4290-952e-4047601e4627'</span>
+</code></pre>
+<blockquote>
+<p>Example response when backend is S3:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 302 Found
+</code></pre>
+<blockquote>
+<p>Example response when backend is local:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 200 OK
+
+&lt;file contents&gt;
+</code></pre>
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET /buildpacks/:guid</code></p>
+
+<p>where <code class="prettyprint">:guid</code> is the buildpack&rsquo;s GUID.</p>
+
+<h3 id="access">Access</h3>
+
+<p>Internal endpoint only</p>
+
+<h2 id="deleting-a-buildpack">Deleting a Buildpack</h2>
+
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre class="highlight shell"><code>curl -X DELETE <span class="s1">'http://internal.example.com/buildpacks/c33e184b-e698-4290-952e-4047601e4627'</span>
+</code></pre>
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 204 No Content
+</code></pre>
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">DELETE /buildpacks/:guid</code></p>
+
+<p>where <code class="prettyprint">:guid</code> is the buildpack&rsquo;s GUID.</p>
+
+<h3 id="access">Access</h3>
+
+<p>Internal endpoint only</p>
 
 <h1 id="buildpack-cache-entries">Buildpack Cache Entries</h1>
 
+<p>A buildpack may choose to cache certain dependencies of an app (e.g. Node modules or Ruby gems). These will be stored as buildpack cache entries.</p>
+
+<h2 id="uploading-a-buildpack-cache-entry">Uploading a Buildpack Cache Entry</h2>
+
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre class="highlight shell"><code>curl -X PUT <span class="s1">'http://internal.example.com/buildpack_cache/entries/83d28f59-d3f7-4d00-9a10-459a69649a87/cflinux'</span> -d @buildpack-cache.zip
+</code></pre>
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 201 Created
+</code></pre>
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">PUT /buildpack_cache/entries/:guid/:stack_name</code></p>
+
+<p>where <code class="prettyprint">:guid</code> is the GUID of the app this buildpack cache is maintained for. <code class="prettyprint">:stack_name</code> is the name of the stack the app is running under, e.g. <code class="prettyprint">cflinux</code>.</p>
+
+<h3 id="request-body">Request Body</h3>
+
+<p><code class="prettyprint">buildpack_cache: &lt;formfile&gt;</code></p>
+
+<h3 id="access">Access</h3>
+
+<p>Internal endpoint only</p>
+
+<h2 id="downloading-a-buildpack-cache-entry">Downloading a Buildpack Cache Entry</h2>
+
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre class="highlight shell"><code>curl -X GET <span class="s1">'http://internal.example.com/buildpack_cache/entries/83d28f59-d3f7-4d00-9a10-459a69649a87/cflinux'</span>
+</code></pre>
+<blockquote>
+<p>Example response when backend is S3:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 302 Found
+</code></pre>
+<blockquote>
+<p>Example response when backend is local:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 200 OK
+
+&lt;file contents&gt;
+</code></pre>
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET /buildpack_cache/entries/:guid/:stack_name</code></p>
+
+<p>where <code class="prettyprint">:guid</code> is the GUID of the app this buildpack cache is maintained for. <code class="prettyprint">:stack_name</code> is the name of the stack the app is running under, e.g. <code class="prettyprint">cflinux</code>.</p>
+
+<h3 id="access">Access</h3>
+
+<p>Internal endpoint only</p>
+
+<h2 id="deleting-a-buildpack-cache-entry">Deleting a Buildpack Cache Entry</h2>
+
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre class="highlight shell"><code>curl -X DELETE <span class="s1">'http://internal.example.com/buildpack_cache/entries/83d28f59-d3f7-4d00-9a10-459a69649a87/cflinux'</span>
+</code></pre>
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 204 No Content
+</code></pre>
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">DELETE /buildpack_cache/entries/:guid/:stack_name</code></p>
+
+<p>where <code class="prettyprint">:guid</code> is the GUID of the app this buildpack cache is maintained for. <code class="prettyprint">:stack_name</code> is the name of the stack the app is running under, e.g. <code class="prettyprint">cflinux</code>.</p>
+
+<h3 id="access">Access</h3>
+
+<p>Internal endpoint only</p>
+
+<h2 id="deleting-all-buildpack-cache-entries-for-an-app">Deleting all Buildpack Cache Entries for an app</h2>
+
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre class="highlight shell"><code>curl -X DELETE <span class="s1">'http://internal.example.com/buildpack_cache/entries/83d28f59-d3f7-4d00-9a10-459a69649a87'</span>
+</code></pre>
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 204 No Content
+</code></pre>
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">DELETE /buildpack_cache/entries/:guid</code></p>
+
+<p>where <code class="prettyprint">:guid</code> is the GUID of the app this buildpack cache is maintained for.</p>
+
+<h3 id="access">Access</h3>
+
+<p>Internal endpoint only</p>
+
+<h2 id="deleting-all-buildpack-cache-entries">Deleting all Buildpack Cache Entries</h2>
+
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre class="highlight shell"><code>curl -X DELETE <span class="s1">'http://internal.example.com/buildpack_cache/entries'</span>
+</code></pre>
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 204 No Content
+</code></pre>
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">DELETE /buildpack_cache/entries</code></p>
+
+<h3 id="access">Access</h3>
+
+<p>Internal endpoint only</p>
+
 <h1 id="app-stash">App Stash</h1>
 
+<p>App Stash optimizes the repeated app push, so that unchanged files need not to be uploaded more than once. It acts like a cache to which files can be uploaded and later referred to in order to bundle those files into a package.</p>
+
+<h2 id="matching-entries">Matching Entries</h2>
+
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre class="highlight shell"><code>curl -X POST <span class="s1">'http://internal.example.com/matches'</span> <span class="se">\</span>
+    -d <span class="s1">'[{
+          "sha1": "8b381f8864b572841a26266791c64ae97738a659",
+          "size": 534567
+        },
+        {
+          "sha1": "594eb15515c89bbfb0874aa4fd4128bee0a1d0b5",
+          "size": 9874
+        }]'</span>
+</code></pre>
+<blockquote>
+<p>Given that the following files are present in app stash:</p>
+</blockquote>
+<pre class="highlight shell"><code>Size | Filename / Checksum
+-----|-----------------------------------------
+9874 | 594eb15515c89bbfb0874aa4fd4128bee0a1d0b5
+6787 | 987348957349857349349haf6876786ehg909034
+1029 | abddd9587agbacfbab98d9890908a8979bbb7898
+</code></pre>
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 200 OK
+
+<span class="o">[{</span>
+  <span class="s2">"sha1"</span>: <span class="s2">"594eb15515c89bbfb0874aa4fd4128bee0a1d0b5"</span>,
+  <span class="s2">"size"</span>: 9874
+<span class="o">}]</span>
+</code></pre>
+<p>This endpoint matches a list of file entries with entries already in the blobstore app stash and returns the ones that are already there.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">POST /app_stash/matches</code></p>
+
+<h3 id="body-parameters">Body Parameters</h3>
+
+<p>JSON array with elements as in <code class="prettyprint">{&quot;sha1&quot;: &quot;&lt;sha1-checksum&gt;&quot;, &quot;size&quot;: &lt;file-size&gt;}</code>.</p>
+
+<h3 id="access">Access</h3>
+
+<p>Internal endpoint only</p>
+
+<h2 id="uploading-entries">Uploading Entries</h2>
+
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre class="highlight shell"><code>curl -X POST <span class="s1">'http://internal.example.com/entries'</span> <span class="se">\</span>
+     -d @entries.zip
+</code></pre>
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 201 Created
+
+<span class="o">[{</span>
+  <span class="s2">"sha1"</span>: <span class="s2">"8b381f8864b572841a26266791c64ae97738a659"</span>,
+  <span class="s2">"fn"</span>:   <span class="s2">"script.rb"</span>,
+  <span class="s2">"mode"</span>: <span class="s2">"0644"</span>
+<span class="o">}]</span>
+</code></pre>
+<p>This endpoint takes a zip file and stores its uncompressed files in the app stash.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">POST /app_stash/entries</code></p>
+
+<h3 id="body-parameters">Body Parameters</h3>
+
+<p><code class="prettyprint">application: &lt;formfile&gt;</code></p>
+
+<h3 id="access">Access</h3>
+
+<p>Internal endpoint only</p>
+
+<h2 id="bundling-entries">Bundling Entries</h2>
+
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre class="highlight shell"><code>curl -X POST <span class="s1">'http://internal.example.com/bundles'</span> <span class="se">\</span>
+     -d <span class="s1">'[{
+           "sha1": "8b381f8864b572841a26266791c64ae97738a659",
+           "fn":   "script.rb",
+           "mode": "755"
+         },
+         {
+           "sha1": "594eb15515c89bbfb0874aa4fd4128bee0a1d0b5",
+           "fn":   "lib/backend.rb",
+           "mode": "644"
+         }]'</span>
+</code></pre>
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 200 OK
+
+&lt;zip file with requested entries&gt;
+</code></pre>
+<p>This endpoint creates and returns a zip file by bundling file entries from the app stash. The entries are defined in the body parameters.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">POST /app_stash/bundles</code></p>
+
+<h3 id="body-parameters">Body Parameters</h3>
+
+<p>JSON array with elements as in <code class="prettyprint">{&quot;sha1&quot;: &quot;&lt;sha1-checksum&gt;&quot;, &quot;fn&quot;: &quot;&lt;filename&gt;&quot;, &quot;mode&quot;: &quot;&lt;filemode&gt;&quot;}</code>.</p>
+
+<h3 id="access">Access</h3>
+
+<p>Internal endpoint only</p>
+
 <h1 id="signed-urls">Signed URLs</h1>
+
+<p>In order to prevent leakage of resources, all external access to the Bits-Service must be done using signed URLs. Signing usually requires username and password.</p>
 
 <h2 id="signing-a-url">Signing a URL</h2>
 
