@@ -20,7 +20,7 @@ A package are the files that make up an application from the developer's point o
 > Example request:
 
 ```shell
-curl -X PUT 'http://internal.example.com/packages/c33e184b-e698-4290-952e-4047601e4627' -d @package-file.zip
+curl -X PUT 'http://internal.example.com/packages/c33e184b-e698-4290-952e-4047601e4627' --data-binay @package-file.zip
 ```
 
 > Example response:
@@ -103,7 +103,7 @@ A droplet is the result of staging an application package. It contains the bits 
 > Example request:
 
 ```shell
-curl -X PUT 'http://internal.example.com/droplets/c33e184b-e698-4290-952e-4047601e4627/b1d2a97c5033319632e65beba49dd92da18c1d20' -d @droplet-file
+curl -X PUT 'http://internal.example.com/droplets/c33e184b-e698-4290-952e-4047601e4627/b1d2a97c5033319632e65beba49dd92da18c1d20' --data-binay @droplet-file
 ```
 
 > Example response:
@@ -186,7 +186,7 @@ A buildpack provides the components necessary to run an application, e.g. the co
 > Example request:
 
 ```shell
-curl -X PUT 'http://internal.example.com/buildpacks/c33e184b-e698-4290-952e-4047601e4627' -d @buildpack-file
+curl -X PUT 'http://internal.example.com/buildpacks/c33e184b-e698-4290-952e-4047601e4627' --data-binay @buildpack-file
 ```
 
 > Example response:
@@ -267,7 +267,7 @@ A buildpack may choose to cache certain dependencies of an app (e.g. Node module
 > Example request:
 
 ```shell
-curl -X PUT 'http://internal.example.com/buildpack_cache/entries/83d28f59-d3f7-4d00-9a10-459a69649a87/cflinux' -d @buildpack-cache.zip
+curl -X PUT 'http://internal.example.com/buildpack_cache/entries/83d28f59-d3f7-4d00-9a10-459a69649a87/cflinux' --data-binay @buildpack-cache.zip
 ```
 
 > Example response:
@@ -439,7 +439,7 @@ Internal endpoint only
 
 ```shell
 curl -X POST 'http://internal.example.com/entries' \
-     -d @entries.zip
+     --data-binay  @entries.zip
 ```
 
 > Example response:
