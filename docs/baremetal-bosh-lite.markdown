@@ -147,7 +147,7 @@ vagrant box update
 vim Vagrantfile
 ```
 
-In the Vagrantfile add the `v.cpus = 7`:
+In the Vagrantfile increase the number of CPUs and add port forwarding:
 
 ```
 Vagrant.configure('2') do |config|
@@ -155,7 +155,11 @@ Vagrant.configure('2') do |config|
 
   config.vm.provider :virtualbox do |v, override|
     override.vm.box_version = '9000.94.0' # ci:replace
-    v.cpus = 7  # <------------------------------------------------- add this line
+
+    # ADD THE FOLLOWING 2 LINES:
+    v.cpus = 7
+    override.vm.network "forwarded_port", guest: 25555, host: 25555
+
     # To use a different IP address for the bosh-lite director, uncomment this line:
     # override.vm.network :private_network, ip: '192.168.59.4', id: :local
     config.vm.network :private_network, ip: '192.168.150.4', id: :local
