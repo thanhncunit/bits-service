@@ -126,7 +126,7 @@
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre class="highlight shell"><code>curl -X PUT <span class="s1">'http://internal.example.com/packages/c33e184b-e698-4290-952e-4047601e4627'</span> -d @package-file.zip
+<pre class="highlight shell"><code>curl -X PUT <span class="s1">'http://internal.example.com/packages/c33e184b-e698-4290-952e-4047601e4627'</span> --data-binay @package-file.zip
 </code></pre>
 <blockquote>
 <p>Example response:</p>
@@ -209,7 +209,7 @@
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre class="highlight shell"><code>curl -X PUT <span class="s1">'http://internal.example.com/droplets/c33e184b-e698-4290-952e-4047601e4627/b1d2a97c5033319632e65beba49dd92da18c1d20'</span> -d @droplet-file
+<pre class="highlight shell"><code>curl -X PUT <span class="s1">'http://internal.example.com/droplets/c33e184b-e698-4290-952e-4047601e4627/b1d2a97c5033319632e65beba49dd92da18c1d20'</span> --data-binay @droplet-file
 </code></pre>
 <blockquote>
 <p>Example response:</p>
@@ -292,7 +292,7 @@
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre class="highlight shell"><code>curl -X PUT <span class="s1">'http://internal.example.com/buildpacks/c33e184b-e698-4290-952e-4047601e4627'</span> -d @buildpack-file
+<pre class="highlight shell"><code>curl -X PUT <span class="s1">'http://internal.example.com/buildpacks/c33e184b-e698-4290-952e-4047601e4627'</span> --data-binay @buildpack-file
 </code></pre>
 <blockquote>
 <p>Example response:</p>
@@ -373,7 +373,7 @@
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre class="highlight shell"><code>curl -X PUT <span class="s1">'http://internal.example.com/buildpack_cache/entries/83d28f59-d3f7-4d00-9a10-459a69649a87/cflinux'</span> -d @buildpack-cache.zip
+<pre class="highlight shell"><code>curl -X PUT <span class="s1">'http://internal.example.com/buildpack_cache/entries/83d28f59-d3f7-4d00-9a10-459a69649a87/cflinux'</span> --data-binay @buildpack-cache.zip
 </code></pre>
 <blockquote>
 <p>Example response:</p>
@@ -545,7 +545,7 @@
 <p>Example request:</p>
 </blockquote>
 <pre class="highlight shell"><code>curl -X POST <span class="s1">'http://internal.example.com/entries'</span> <span class="se">\</span>
-     -d @entries.zip
+     --data-binay  @entries.zip
 </code></pre>
 <blockquote>
 <p>Example response:</p>
