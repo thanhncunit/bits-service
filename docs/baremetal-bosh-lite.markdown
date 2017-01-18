@@ -84,13 +84,13 @@ ssh into the bare-metal box 'concourse' and execute:
 
 ```
 # bosh1 access to BOSH director
-ip route add 192.168.50.0/24 via 10.155.248.181
+ip route add 192.168.50.0/24 via 10.155.171.3
 
 # access to bits-service VM
-ip route add 10.250.0.0/22 via 10.155.248.181
+ip route add 10.250.0.0/22 via 10.155.171.3
 
 # bosh2 access to BOSH director
-ip route add 192.168.100.0/24 via 10.155.248.185
+ip route add 192.168.100.0/24 via 10.155.171.22
 
 # access to the acceptance env. BOSH director
 ip route add 192.168.150.0/24 via 10.155.248.164
@@ -106,7 +106,7 @@ ip route add 10.250.0.0/16 via 192.168.50.4
 
 cd ~/workspace/bosh-lite
 vagrant ssh
-sudo ip route add 10.155.248.0/24 via 192.168.50.1 dev eth1
+sudo ip route add 10.155.171.0/24 via 192.168.50.1 dev eth1
 ```
 
 ## bosh2
@@ -119,7 +119,7 @@ ip route add 10.250.0.0/16 via 192.168.100.4
 
 cd ~/workspace/bosh-lite
 vagrant ssh
-sudo ip route add 10.155.248.0/24 via 192.168.100.1 dev eth1
+sudo ip route add 10.155.171.0/24 via 192.168.100.1 dev eth1
 ```
 
 ## acceptance
