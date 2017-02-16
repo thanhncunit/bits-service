@@ -101,6 +101,7 @@ ip route add 10.250.0.0/16 via 192.168.50.4
 cd ~/workspace/bosh-lite
 vagrant ssh
 sudo ip route add 10.155.171.0/24 via 192.168.50.1 dev eth1
+sudo ip route add 10.155.248.0/24 via 192.168.50.1 dev eth1
 ```
 
 ## bosh2
@@ -114,6 +115,7 @@ ip route add 10.250.0.0/16 via 192.168.100.4
 cd ~/workspace/bosh-lite
 vagrant ssh
 sudo ip route add 10.155.171.0/24 via 192.168.100.1 dev eth1
+sudo ip route add 10.155.248.0/24 via 192.168.100.1 dev eth1
 ```
 
 ## acceptance
