@@ -78,18 +78,6 @@ Regenerate the public key from the private one if necessary:
 ssh-keygen -t rsa -f ./flintstone_id_rsa  -y > flintstone_id_rsa.pub
 ```
 
-### IP routing
-
-ssh into the bare-metal box 'concourse' and execute:
-
-```
-# access to bits-service VM
-ip route add 10.250.0.0/22 via 10.155.171.3
-
-# access to the acceptance env. BOSH director
-ip route add 192.168.150.0/24 via 10.155.248.164
-```
-
 ## bosh1
 
 ssh into the bare-metal box 'bosh1' and execute:
