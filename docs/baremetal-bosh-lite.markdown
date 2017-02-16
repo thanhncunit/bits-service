@@ -64,19 +64,7 @@ chmod +x spruce-linux-amd64
 mv spruce-linux-amd64 /usr/local/bin/spruce
 ```
 
-# Wire concourse and bosh-lite
-
-## Concourse
-
-### SSH keys
-
-Concourse needs to be able to ssh into the box. Therefore the CI user's public key needs to be added to the `~/.ssh/authorized_keys` file on each bare-metal box, e.g. with `cat flintstone_id_rsa.pub >> ~/.ssh/authorized_keys`.
-
-Regenerate the public key from the private one if necessary:
-
-```
-ssh-keygen -t rsa -f ./flintstone_id_rsa  -y > flintstone_id_rsa.pub
-```
+# Set up IP routing for bosh-lites
 
 ## bosh1
 
