@@ -6,6 +6,7 @@
 * Create a [new VPN password](https://control.softlayer.com/account/user/profile) (DIY)
 * Set up the [VPN client](http://knowledgelayer.softlayer.com/procedure/ssl-vpn-mac-os-x-1010) (DIY)
 * Get access to shared Lastpass folder (ask the PM or anchor)
+* Invite team member to Bluemix Flintstone Account, Cloud Foundry Flintstone Org, performance tests Space
 
 # Team Communication
 
