@@ -33,27 +33,8 @@ namespace :docs do
     target = src.pathmap('%d/%n.png')
     desc "Render #{target} from #{src}"
     file target do
-      websequencediagram(target, src)
+      `docs/websequencediagram #{src} #{target}`
+      warn "#{src} rendered to #{target}"
     end
   end
-end
-
-#
-# adapted from
-# https://www.websequencediagrams.com/embedding.html#ruby
-#
-def websequencediagram(target, source)
-  require 'net/http'
-  require 'yaml'
-  require 'uri'
-  require 'open-uri'
-
-  response = Net::HTTP.post_form(
-    URI.parse('http://www.websequencediagrams.com/index.php'),
-    'style' => 'default',
-    'message' => File.read(source)
-  )
-
-  appendix = YAML.load(response.body)['img']
-  File.write(target, open("http://www.websequencediagrams.com/#{appendix}").read)
 end

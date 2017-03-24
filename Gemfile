@@ -20,6 +20,7 @@ group :development do
   gem 'webmock'
   gem 'rest-client'
   gem 'rubocop'
+  gem 'guard-shell'
   gem 'guard-rspec', require: false
   gem 'guard-bundler', require: false
   gem 'pry-byebug'

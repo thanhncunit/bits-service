@@ -144,6 +144,9 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
+    guard-shell (0.7.1)
+      guard (>= 2.0.0)
+      guard-compat (~> 1.0)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
     httpclient (2.7.1)
@@ -255,6 +258,7 @@ DEPENDENCIES
   fog
   guard-bundler
   guard-rspec
+  guard-shell
   httpclient
   i18n
   machinist (~> 1.0.6)
@@ -275,4 +279,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.12.5
+   1.13.6

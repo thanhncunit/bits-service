@@ -12,3 +12,11 @@ guard :rspec, cmd: 'bundle exec rspec' do
   watch(%r{^lib/bits_service/(.+)\.rb$}){|m| "spec/unit/#{m[1]}_spec.rb"}
   watch('spec/spec_helper.rb')  { 'spec' }
 end
+
+guard :shell do
+  watch(/^(docs\/.+)\.txt/) do |m|
+    src = "#{m[1]}.txt"
+    target = "#{m[1]}.png"
+    `docs/websequencediagram #{src} #{target}`
+  end
+end
