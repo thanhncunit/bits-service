@@ -10,8 +10,14 @@ access_log /var/vcap/sys/log/nginx_bits/metrics_csv.log metrics_csv;
 ```
 
 ## Bosh scp
-bosh -t sl -d egurnov.yml scp bits-service/0 --download /tmp/collectd.csv.conf ./
-bosh -t sl -d egurnov.yml scp bits-service/0 --upload collectd.egurnov.conf.bits-service.0 /tmp/collectd.egurnov.conf.1
+
+```bash
+# start VPN beforehand
+bosh target https://10.155.171.25:25555 sl
+bosh download manifest bits-service-local > bits-service-local.yml
+bosh -t sl -d bits-service-local.yml scp bits-service/0 --download /tmp/collectd.csv.conf ./
+bosh -t sl -d bits-service-local.yml scp bits-service/0 --upload collectd.egurnov.conf.bits-service.0 /tmp/collectd.egurnov.conf.1
+```
 
 ## Commands
 monit restart collectd & watch -n 1 monit summary
