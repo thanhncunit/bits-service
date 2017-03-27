@@ -1,0 +1,2 @@
+Include "/tmp/collectd.all.conf"
+Include "/tmp/collectd.csv.conf"

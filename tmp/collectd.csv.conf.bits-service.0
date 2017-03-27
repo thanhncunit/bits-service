@@ -1,0 +1,39 @@
+LoadPlugin tail_csv
+<Plugin "tail_csv">
+  <Metric "response-time">
+    Type "gauge"
+    Instance "response-time"
+    ValueFrom 3
+  </Metric>
+  <Metric "bytes-sent">
+    Type "gauge"
+    Instance "bytes_sent"
+    ValueFrom 4
+  </Metric>
+  <File "/var/vcap/sys/log/nginx_bits/metrics_csv.log">
+    Instance "metric_csv"
+    Interval 1
+    Collect "response-time" "bytes-sent"
+  </File>
+  <File "/tmp/wtf-csv.log">
+    Instance "wtf_metric_csv"
+    Interval 1
+    Collect "response-time" "bytes-sent"
+  </File>
+</Plugin>
+
+LoadPlugin csv
+<Plugin "csv">
+  DataDir "/var/lib/collectd/csv"
+  StoreRates true
+</Plugin>
+
+LoadPlugin write_http
+<Plugin "write_http">
+  <Node "wtf">
+    URL "http://localhost:9001/post-collectd";
+    User "collectd"
+    Password "passw0rd"
+    Format JSON
+  </Node>
+</Plugin>

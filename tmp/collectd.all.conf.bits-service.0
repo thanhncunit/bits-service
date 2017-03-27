@@ -1,0 +1,29 @@
+LoadPlugin tail
+<Plugin "tail">
+  <File "/tmp/wtf-tail.log">
+    Instance "wtf-tail"
+    Interval 5
+    <Match>
+      Regex "request-time:([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "gauge"
+      Instance "bytes_sent"
+    </Match>
+  </File>
+  <File "/var/vcap/sys/log/nginx_bits/metrics.log">
+    Instance "metrics"
+    Interval 5
+    <Match>
+      Regex "request-time:([0-9.]+)"
+      DSType "GaugeAverage"
+      Type "gauge"
+      Instance "bytes_sent"
+    </Match>
+  </File>
+</Plugin>
+
+LoadPlugin csv
+<Plugin "csv">
+  DataDir "/var/lib/collectd/csv"
+  StoreRates true
+</Plugin>
