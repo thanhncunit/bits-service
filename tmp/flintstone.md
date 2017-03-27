@@ -22,11 +22,14 @@ bosh -t sl -d bits-service-local.yml scp bits-service/0 --upload collectd.egurno
 ## Commands
 
 ```bash
-# logon to debug session
-tmux a -t egurnov
+# attach to debug session
+tmux attach -t egurnov
 
 # Apply collectd config changes
 monit restart collectd && watch -n 1 monit summary
+
+# detach from debug session; leaving it running
+tmux detach
 ```
 
 ## Poor man's HTTP server
