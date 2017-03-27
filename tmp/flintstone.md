@@ -20,7 +20,14 @@ bosh -t sl -d bits-service-local.yml scp bits-service/0 --upload collectd.egurno
 ```
 
 ## Commands
-monit restart collectd & watch -n 1 monit summary
+
+```bash
+# logon to debug session
+tmux a -t egurnov
+
+# Apply collectd config changes
+monit restart collectd && watch -n 1 monit summary
+```
 
 ## Poor man's HTTP server
 ### New shell for each response
@@ -39,9 +46,24 @@ while true ; do echo -e "HTTP/1.1 200 OK\n\n" | nc -l 9001 | grep '^\[' | jq '.[
 while true ; do echo -e "HTTP/1.1 200 OK\n\n" | nc -l 9001 | grep '^\[' | jq '.[] | select(.plugin == "tail_csv")' ; done
 
 ## Grafana metric string
- e5a3df78-1e62-4da0-aa4c-b4500ee4edc7.bosh.bits-service-local.bits-service.0.f04e3ee7-0965-4d10-a00e-8ffdb7befd7a.tail-wtf-tail.gauge-bytes_sent
-|space id                            |hard|deployment name   |job name    |i| host name                          |plugin|plugin instance |type| type instance|
-                                      coded                                nstance
+
+```
+e5a3df78-1e62-4da0-aa4c-b4500ee4edc7.bosh.bits-service-local.bits-service.0.f04e3ee7-0965-4d10-a00e-8ffdb7befd7a.tail-wtf-tail.gauge-bytes_sent
+A                                   .B   .C                 .D           .E.F                                   .G   -H       .I    -K
+```
+where
+
+A - space id
+B - hard-coded name
+C - deployment name
+D - job name
+E - instance name
+F - host name
+G - plugin name
+H - plugin instance
+I - type
+K - type instance
+
 
 https://collectd.org/wiki/index.php/Naming_schema
 space id from /var/vcap/jobs/collectd/collectd.d/write_metric_mtlumberjack.conf
