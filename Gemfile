@@ -10,6 +10,7 @@ gem 'mime-types', '~> 2.6.2'
 gem 'activesupport'
 gem 'puma'
 gem 'cloudfront-signer'
+gem 'statsd-ruby'
 
 group :development do
   gem 'rspec'
