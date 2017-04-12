@@ -16,7 +16,9 @@ module BitsService
 
         begin
           SafeZipper.unzip!(uploaded_filepath, destination_path)
-          app_stash_blobstore.cp_r_to_blobstore(destination_path)
+          statsd.time 'app_stash-cp_r_to_blobstore-time' do
+            app_stash_blobstore.cp_r_to_blobstore(destination_path)
+          end
           receipt = Receipt.new(destination_path)
 
           json 201, receipt.contents

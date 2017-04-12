@@ -44,7 +44,11 @@ module BitsService
       def create_from_upload(uploaded_filepath, path)
         fail Errors::ApiError.new_from_details('DropletUploadInvalid', 'a file must be provided') if uploaded_filepath.to_s == ''
 
-        droplet_blobstore.cp_to_blobstore(uploaded_filepath, path)
+
+        statsd.time 'droplet-cp_to_blobstore-time' do
+          droplet_blobstore.cp_to_blobstore(uploaded_filepath, path)
+        end
+
         status 201
       ensure
         FileUtils.rm_f(uploaded_filepath) if uploaded_filepath

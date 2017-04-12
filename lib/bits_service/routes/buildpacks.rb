@@ -8,7 +8,9 @@ module BitsService
           uploaded_filepath = upload_params.upload_filepath('buildpack')
           fail Errors::ApiError.new_from_details('BuildpackBitsUploadInvalid', 'a file must be provided') if uploaded_filepath.to_s == ''
 
-          buildpack_blobstore.cp_to_blobstore(uploaded_filepath, guid)
+          statsd.time 'buildpack-cp_to_blobstore-time' do
+            buildpack_blobstore.cp_to_blobstore(uploaded_filepath, guid)
+          end
 
           status 201
         ensure
