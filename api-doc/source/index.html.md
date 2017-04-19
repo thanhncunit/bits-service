@@ -20,7 +20,8 @@ A package are the files that make up an application from the developer's point o
 > Example request:
 
 ```shell
-curl -X PUT 'http://internal.example.com/packages/c33e184b-e698-4290-952e-4047601e4627' --data-binary @package-file.zip
+curl -X PUT 'http://internal.example.com/packages/c33e184b-e698-4290-952e-4047601e4627' \
+  -F package=@package-file
 ```
 
 > Example response:
@@ -103,7 +104,8 @@ A droplet is the result of staging an application package. It contains the bits 
 > Example request:
 
 ```shell
-curl -X PUT 'http://internal.example.com/droplets/c33e184b-e698-4290-952e-4047601e4627/b1d2a97c5033319632e65beba49dd92da18c1d20' --data-binary @droplet-file
+curl -X PUT 'http://internal.example.com/droplets/c33e184b-e698-4290-952e-4047601e4627/b1d2a97c5033319632e65beba49dd92da18c1d20' \
+  -F droplet=@droplet-file
 ```
 
 > Example response:
@@ -186,7 +188,8 @@ A buildpack provides the components necessary to run an application, e.g. the co
 > Example request:
 
 ```shell
-curl -X PUT 'http://internal.example.com/buildpacks/c33e184b-e698-4290-952e-4047601e4627' --data-binary @buildpack-file
+curl -X PUT 'http://internal.example.com/buildpacks/c33e184b-e698-4290-952e-4047601e4627' \
+  -F buildpack=@buildpack-file
 ```
 
 > Example response:
@@ -267,7 +270,8 @@ A buildpack may choose to cache certain dependencies of an app (e.g. Node module
 > Example request:
 
 ```shell
-curl -X PUT 'http://internal.example.com/buildpack_cache/entries/83d28f59-d3f7-4d00-9a10-459a69649a87/cflinux' --data-binary @buildpack-cache.zip
+curl -X PUT 'http://internal.example.com/buildpack_cache/entries/83d28f59-d3f7-4d00-9a10-459a69649a87/cflinux' \
+  -F buildpack_cache=@buildpack-cache
 ```
 
 > Example response:
@@ -390,7 +394,7 @@ App Stash optimizes the repeated app push, so that unchanged files need not to b
 > Example request:
 
 ```shell
-curl -X POST 'http://internal.example.com/matches' \
+curl -X POST 'http://internal.example.com/app_stash/matches' \
     -d '[{
           "sha1": "8b381f8864b572841a26266791c64ae97738a659",
           "size": 534567
@@ -438,8 +442,8 @@ Internal endpoint only
 > Example request:
 
 ```shell
-curl -X POST 'http://internal.example.com/entries' \
-     --data-binary  @entries.zip
+curl -X POST 'http://internal.example.com/app_stash/entries' \
+  -F application=@entries
 ```
 
 > Example response:
@@ -470,7 +474,7 @@ Internal endpoint only
 > Example request:
 
 ```shell
-curl -X POST 'http://internal.example.com/bundles' \
+curl -X POST 'http://internal.example.com/app_stash/bundles' \
      -d '[{
            "sha1": "8b381f8864b572841a26266791c64ae97738a659",
            "fn":   "script.rb",
@@ -537,4 +541,30 @@ Internal endpoint only
 
 <aside class="notice">
 Signing URL does not imply that the resource exists.
+</aside>
+
+> Example upload with S3 blobstore:
+
+```shell
+curl -X PUT 'https://ci-bits-service-blobs.s3-eu-west-1.amazonaws.com/bd/f4/bdf47b84-1349-4abd-9561-5004858dfa05?X-Amz-Expires=3600&X-Amz-Date=20161202T152037Z&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJ22EGSN2MKAXL3MA/20161202/eu-west-1/s3/aws4_request&X-Amz-SignedHeaders=host&X-Amz-Signature=b8c79895f0cfa7e38ee2585ae9f92aa56fc66601daf272f637aa04e7b70e8cc2' \
+  --data-binary @package-file
+```
+
+> Example upload with WebDAV blobstore:
+
+```shell
+curl -X PUT 'http://webdav-blobstore.example.com/write/packages/bd/f4/bdf47b84-1349-4abd-9561-5004858dfa05?md5=YDjcMjytsnVEzoSxqpiC4A&expires=1492594615' \
+  --data-binary @package-file
+```
+
+> Example upload with Local blobstore:
+
+```shell
+curl -X PUT 'http://internal.example.com/signed/packages/bdf47b84-1349-4abd-9561-5004858dfa05?md5=YDjcMjytsnVEzoSxqpiC4A&expires=1492594615' \
+  -F package=@package-file
+```
+
+<aside class="warning">
+Depending on the blobstore backend being used, you might need to adjust how the returned signed PUT URL is used.
+For local blobstore it needs to be a form-data upload. For S3 and WebDAV binary data is sent directly in the request body.
 </aside>
