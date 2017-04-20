@@ -124,6 +124,9 @@ In the Vagrantfile increase the number of CPUs and add port forwarding:
 ```
 Vagrant.configure('2') do |config|
   config.vm.box = 'cloudfoundry/bosh-lite'
+  
+  # For bosh2
+  config.vm.network :private_network, ip: '192.168.100.4', id: :local 
 
   config.vm.provider :virtualbox do |v, override|
     override.vm.box_version = '9000.94.0' # ci:replace
@@ -134,18 +137,20 @@ Vagrant.configure('2') do |config|
 
     # To use a different IP address for the bosh-lite director, uncomment this line:
     # override.vm.network :private_network, ip: '192.168.59.4', id: :local
-    config.vm.network :private_network, ip: '192.168.150.4', id: :local
   end
   ...
 ```
+
+For bosh2, also change `bin/add-route` to contain `gw="192.168.100.4"`.
 
 Start bosh-lite and create our users:
 
 ```
 vagrant up
-bosh create user <user>
+bosh create user admin <password>
 ```
 
+Where `password` comes from LastPass `ci-config` notes `bosh-password` or `bosh2-password`.
 # Install cf
 
 ```
