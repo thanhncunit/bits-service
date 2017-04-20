@@ -66,34 +66,6 @@ mv spruce-linux-amd64 /usr/local/bin/spruce
 
 # Set up IP routing for bosh-lites
 
-## bosh1
-
-ssh into the bare-metal box 'bosh1' and execute:
-
-```
-echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
-ip route add 10.250.0.0/16 via 192.168.50.4
-
-cd ~/workspace/bosh-lite
-vagrant ssh
-sudo ip route add 10.155.171.0/24 via 192.168.50.1 dev eth1
-sudo ip route add 10.155.248.0/24 via 192.168.50.1 dev eth1
-```
-
-## bosh2
-
-ssh into the bare-metal box 'bosh2' and execute:
-
-```
-echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
-ip route add 10.250.0.0/16 via 192.168.100.4
-
-cd ~/workspace/bosh-lite
-vagrant ssh
-sudo ip route add 10.155.171.0/24 via 192.168.100.1 dev eth1
-sudo ip route add 10.155.248.0/24 via 192.168.100.1 dev eth1
-```
-
 ## acceptance
 
 ssh into the bare-metal box 'acceptance' and execute:
@@ -158,4 +130,37 @@ wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key |
 echo "deb http://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
 sudo apt-get update
 sudo apt-get install cf-cli
+```
+
+
+# Probably deprecated
+
+## Set up IP routing for bosh-lites
+
+### bosh1
+
+ssh into the bare-metal box 'bosh1' and execute:
+
+```
+echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
+ip route add 10.250.0.0/16 via 192.168.50.4
+
+cd ~/workspace/bosh-lite
+vagrant ssh
+sudo ip route add 10.155.171.0/24 via 192.168.50.1 dev eth1
+sudo ip route add 10.155.248.0/24 via 192.168.50.1 dev eth1
+```
+
+### bosh2
+
+ssh into the bare-metal box 'bosh2' and execute:
+
+```
+echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
+ip route add 10.250.0.0/16 via 192.168.100.4
+
+cd ~/workspace/bosh-lite
+vagrant ssh
+sudo ip route add 10.155.171.0/24 via 192.168.100.1 dev eth1
+sudo ip route add 10.155.248.0/24 via 192.168.100.1 dev eth1
 ```
