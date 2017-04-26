@@ -45,7 +45,7 @@ module BitsService
         fail Errors::ApiError.new_from_details('DropletUploadInvalid', 'a file must be provided') if uploaded_filepath.to_s == ''
 
 
-        statsd.time 'droplet-cp_to_blobstore-time' do
+        statsd.time 'droplet-cp_to_blobstore-time.sparse-avg' do
           droplet_blobstore.cp_to_blobstore(uploaded_filepath, path)
         end
 

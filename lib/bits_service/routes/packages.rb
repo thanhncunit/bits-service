@@ -39,7 +39,7 @@ module BitsService
       def create_from_upload(uploaded_filepath, target_guid)
         fail Errors::ApiError.new_from_details('PackageUploadInvalid', 'a file must be provided') if uploaded_filepath.to_s.empty?
 
-        statsd.time 'packages-cp_to_blobstore-time' do
+        statsd.time 'packages-cp_to_blobstore-time.sparse-avg' do
           packages_blobstore.cp_to_blobstore(uploaded_filepath, target_guid)
         end
 
