@@ -14,7 +14,7 @@ module BitsService
       end
 
       def app_stash_blobstore
-        @app_stash_blobstore ||= create_client(:app_stash)
+        @app_stash_blobstore ||= create_client(:app_stash, 'app_bits_cache')
       end
 
       def packages_blobstore
