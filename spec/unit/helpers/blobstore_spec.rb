@@ -250,7 +250,7 @@ module BitsService
           expect(BitsService::Blobstore::ClientProvider).to receive(:provide).with(
             options: config[:app_stash],
             directory_key: 'directory_key',
-            root_dir: nil,
+            root_dir: 'app_bits_cache',
           )
           subject.app_stash_blobstore
         end
@@ -268,7 +268,7 @@ module BitsService
             expect(BitsService::Blobstore::ClientProvider).to receive(:provide).with(
               options: config[:app_stash],
               directory_key: 'app_stash',
-              root_dir: nil,
+              root_dir: 'app_bits_cache',
             )
             subject.app_stash_blobstore
           end

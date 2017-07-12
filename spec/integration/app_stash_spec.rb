@@ -47,10 +47,10 @@ describe 'app_stash endpoint', type: :integration do
     it 'stores all the files from the zip based in their SHAs' do
       make_post_request('/app_stash/entries', request_body)
 
-      app_rb = blob_path(@root_dir, 'app_stash', app_rb_sha)
+      app_rb = blob_path(@root_dir, File.join('app_stash', 'app_bits_cache'), app_rb_sha)
       expect(File.exist?(app_rb)).to eq(true)
 
-      lib_rb = blob_path(@root_dir, 'app_stash', lib_rb_sha)
+      lib_rb = blob_path(@root_dir, File.join('app_stash', 'app_bits_cache'), lib_rb_sha)
       expect(File.exist?(lib_rb)).to eq(true)
     end
 
