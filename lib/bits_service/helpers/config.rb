@@ -1,5 +1,3 @@
-require 'yaml'
-
 module BitsService
   module Helpers
     module Config
