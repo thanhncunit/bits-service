@@ -7,6 +7,7 @@
 * Set up the [VPN client](http://knowledgelayer.softlayer.com/procedure/ssl-vpn-mac-os-x-1010) (DIY)
 * Get access to shared Lastpass folder (ask the PM or anchor)
 * Invite team member to Bluemix Flintstone Account, Cloud Foundry Flintstone Org, performance tests Space
+* [Install git hooks](#install-git-hooks)
 
 # Team Communication
 
@@ -60,4 +61,24 @@ fly execute -t flintstone --config ci/tasks/run-tests.yml --input=git-bits-servi
 
 # same, but with two inputs
 fly execute -t flintstone --config ci/tasks/upload-to-object-storage.yml --input=git-bits-service-release=. --input=releases=dev_releases/bits-service
+```
+
+# Install git hooks
+
+We use this hook to prevent accidential commits of secrets:
+
+```bash
+cd path/to/repo
+~/workspace/bits-service/scripts/install-git-hooks.sh
+```
+
+This needs to be done for each repo where the hook should run, e.g. with
+
+```bash
+for d in ~/workspace/bits-service*; do
+  (
+    cd "$d"
+    ~/workspace/bits-service/scripts/install-git-hooks.sh
+  )
+done
 ```
