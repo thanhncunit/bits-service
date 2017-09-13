@@ -114,6 +114,8 @@ If it is not, `cf delete-shared-domain <domain>` any older domains.
 ## Deploy CF with Bits-service enabled
 Assuming the previous step worked. Possible BLOBSTORE_TYPE options are `local`, `webdav` and `s3`.
 
+If no bits-service job exists in the deployment, it is necessary to first run the deployment with bits-service disabled by including `-o ~/workspace/bits-service-ci/operations/disable-bits-service.yml` in deployment command. After bits-service VM has bee created and bits-service started, further deployments should succeed.
+
 ### Local and webdav
 ```bash
 BLOBSTORE_TYPE=local # or webdav
