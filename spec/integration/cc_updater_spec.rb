@@ -39,7 +39,7 @@ module BitsService
 
     around(:example) do |example|
       StubServer.open(port, replies, ssl: ssl, webrick: webrick_additional_config) do |server|
-        server.wait
+        2.times { server.wait } # Intentionally wait twice to give stub-server enough time to come up before running the example.
         example.run
       end
     end
