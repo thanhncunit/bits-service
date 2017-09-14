@@ -30,7 +30,7 @@ module BitsService
       update_cloud_controller(target_guid, :failed, error: error)
     end
 
-    def ready(target_guid, sha1:, sha256:)
+    def ready(target_guid, sha1: nil, sha256: nil)
       update_cloud_controller(
         target_guid,
         :ready,

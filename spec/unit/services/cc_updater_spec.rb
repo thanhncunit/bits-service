@@ -15,16 +15,25 @@ module BitsService
       end
 
       it 'can update the CC with PROCESSING_UPLOAD' do
-        expect(mtls_client).to receive(:patch) do |url, body|
+        expect(mtls_client).to receive(:patch) { |url, body|
           expect(url).to eq('https://cc.example.com:1234/internal/v8/packages/dummy-guid')
           expect(body).to include_json(state: 'PROCESSING_UPLOAD')
-        end.and_return(response)
+        }.and_return(response)
 
         cc_updater.processing_upload('dummy-guid')
       end
 
+      it 'accepts empty digests' do
+        expect(mtls_client).to receive(:patch) { |url, body|
+          expect(url).to eq('https://cc.example.com:1234/internal/v8/packages/dummy-guid')
+          expect(body).to include_json(state: 'READY')
+        }.and_return(response)
+
+        cc_updater.ready('dummy-guid')
+      end
+
       it 'can update the CC with READY' do
-        expect(mtls_client).to receive(:patch) do |url, body|
+        expect(mtls_client).to receive(:patch) { |url, body|
           expect(url).to eq('https://cc.example.com:1234/internal/v8/packages/dummy-guid')
           expect(body).to include_json(
             state: 'READY',
@@ -33,16 +42,16 @@ module BitsService
               { type: 'sha256', value: 'potatoest' }
             ]
           )
-        end.and_return(response)
+        }.and_return(response)
 
         cc_updater.ready('dummy-guid', sha1: 'potato', sha256: 'potatoest')
       end
 
       it 'can update the CC with FAILED' do
-        expect(mtls_client).to receive(:patch) do |url, body|
+        expect(mtls_client).to receive(:patch) { |url, body|
           expect(url).to eq('https://cc.example.com:1234/internal/v8/packages/dummy-guid')
           expect(body).to include_json(state: 'FAILED', error: 'some-error')
-        end.and_return(response)
+        }.and_return(response)
 
         cc_updater.failed('dummy-guid', 'some-error')
       end

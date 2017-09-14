@@ -9,23 +9,28 @@ module BitsService
       include Helpers::CCUpdaterFactory
 
       put '/packages/:guid' do |guid|
-        case
-        when uploaded_filepath = upload_params.upload_filepath('package')
-          try_update_status { cc_updater.processing_upload(guid) }
-          begin
-            digests = create_from_upload(uploaded_filepath, guid)
-            try_update_status { cc_updater.ready(guid, digests) }
-          rescue
-            try_update_status(ignore_errors: true) { cc_updater.failed(guid, $ERROR_INFO.to_s) }
-            raise
-          end
-        when source_guid = parsed_body['source_guid']
-          create_as_duplicate(source_guid, guid)
-        else
+        uploaded_filepath = upload_params.upload_filepath('package')
+        source_guid = parsed_body['source_guid'] unless uploaded_filepath
+
+        if uploaded_filepath.nil? && source_guid.nil?
           fail(ApiError.new_from_details('InvalidPackageSource').tap { |err|
             # CloudController allows to set package state to FAILED or READY directly from AWAITING_UPLOAD
             try_update_status(ignore_errors: true) { cc_updater.failed(guid, err.to_s) }
           })
+        end
+
+        begin
+          try_update_status { cc_updater.processing_upload(guid) }
+          if uploaded_filepath
+            digests = create_from_upload(uploaded_filepath, guid)
+            try_update_status { cc_updater.ready(guid, digests) }
+          elsif source_guid
+            create_as_duplicate(source_guid, guid)
+            try_update_status { cc_updater.ready(guid) }
+          end
+        rescue
+          try_update_status(ignore_errors: true) { cc_updater.failed(guid, $ERROR_INFO.to_s) }
+          raise
         end
       end
 
@@ -73,7 +78,7 @@ module BitsService
 
       def create_as_duplicate(source_guid, target_guid)
         blob = packages_blobstore.blob(source_guid)
-        fail ApiError.new_from_details('ResourceNotFound', source_guid) unless blob
+        fail ApiError.new_from_details('ResourceNotFound', "Could not find package: #{source_guid}") unless blob
 
         packages_blobstore.cp_file_between_keys(source_guid, target_guid)
         status 201
