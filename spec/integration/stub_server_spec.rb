@@ -19,14 +19,14 @@ module BitsService
 
       it 'can connect' do
         StubServer.open(port, replies, ssl: ssl) do |server|
-          server.wait
+          2.times { server.wait } # Intentionally wait twice to give stub-server enough time to come up before running the example.
           expect(open("https://localhost:#{port}/hello", ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE).read).to eq 'World'
         end
       end
 
       it 'fails on unknown paths' do
         StubServer.open(port, replies, ssl: ssl) do |server|
-          server.wait
+          2.times { server.wait } # Intentionally wait twice to give stub-server enough time to come up before running the example.
           expect { open("https://localhost:#{port}/no", ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE).read }.to raise_error(OpenURI::HTTPError)
         end
       end
