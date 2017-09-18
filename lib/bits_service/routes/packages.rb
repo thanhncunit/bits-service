@@ -20,8 +20,8 @@ module BitsService
         end
 
         begin
-          try_update_status { cc_updater.processing_upload(guid) }
           if uploaded_filepath
+            try_update_status { cc_updater.processing_upload(guid) }
             digests = create_from_upload(uploaded_filepath, guid)
             try_update_status { cc_updater.ready(guid, digests) }
           elsif source_guid

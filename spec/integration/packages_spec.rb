@@ -122,7 +122,7 @@ describe 'packages resource', type: :integration do
         end
       end
 
-      context 'when the droplets does not exist' do
+      context 'when the package does not exist' do
         let(:resource_path) { '/packages/not-existing' }
 
         it 'returns HTTP status code 404' do
@@ -217,7 +217,15 @@ describe 'packages resource', type: :integration do
 
     let(:status_code) { 204 }
     let(:replies) do
-      { "/packages/#{guid}" => [status_code, {}, []] }
+      {
+        "/packages/#{guid}" => [status_code, {}, []],
+        "/packages/dummy-source-guid" => [204, {}, []],
+      }
+    end
+    let(:source_guid) do
+      'dummy-source-guid'.tap do |guid|
+        make_put_request("/packages/#{guid}", upload_body)
+      end
     end
 
     around(:example) do |example|
@@ -259,6 +267,15 @@ describe 'packages resource', type: :integration do
           expect(response.code).to eq 500
         end
       end
+
+      context 'with source_guid' do
+        let(:update_body) { JSON.generate(source_guid: source_guid) }
+
+        it 'returns HTTP status 500' do
+          response = make_put_request(resource_path, update_body)
+          expect(response.code).to eq 500
+        end
+      end
     end
 
     context 'unknown package' do
@@ -267,6 +284,17 @@ describe 'packages resource', type: :integration do
       context 'with file upload' do
         it 'returns HTTP status 404' do
           response = make_put_request(resource_path, upload_body)
+          expect(response.code).to eq 404
+          expect { JSON.parse(response.body) }.to_not raise_error
+          expect(JSON.parse(response.body)['code']).to eq 10010
+        end
+      end
+
+      context 'with source_guid' do
+        let(:update_body) { JSON.generate(source_guid: source_guid) }
+
+        it 'returns HTTP status 404' do
+          response = make_put_request(resource_path, update_body)
           expect(response.code).to eq 404
           expect { JSON.parse(response.body) }.to_not raise_error
           expect(JSON.parse(response.body)['code']).to eq 10010

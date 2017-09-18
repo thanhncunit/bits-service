@@ -190,7 +190,7 @@ module BitsService
           end
 
           it 'updates the Cloud Controller' do
-            expect(cc_updater).to receive(:processing_upload).with(new_guid)
+            expect(cc_updater).to_not receive(:processing_upload)
             expect(cc_updater).to receive(:ready).with(new_guid)
             expect(cc_updater).to_not receive(:failed)
             expect(response).to be
@@ -199,14 +199,6 @@ module BitsService
           it 'copies the blob between keys' do
             expect(blobstore).to receive(:cp_file_between_keys).with(guid, new_guid)
             expect(response).to be
-          end
-
-          context 'fails when updating the Cloud Controller with PROCESSING_UPLOAD' do
-            it 'returns HTTP status 400' do
-              expect(cc_updater).to receive(:processing_upload).with(new_guid).and_raise(CCUpdater::UpdateError)
-              expect(response.status).to eq(400)
-              expect(response.body).to include('Cannot update')
-            end
           end
 
           context 'fails when updating the Cloud Controller with READY' do
@@ -227,7 +219,7 @@ module BitsService
             end
 
             it 'updates the Cloud Controller' do
-              expect(cc_updater).to receive(:processing_upload).with(new_guid)
+              expect(cc_updater).to_not receive(:processing_upload)
               expect(cc_updater).to_not receive(:ready)
               expect(cc_updater).to receive(:failed).with(new_guid, "Could not find package: #{guid}")
               expect(response).to be
@@ -244,7 +236,7 @@ module BitsService
             end
 
             it 'updates the Cloud Controller' do
-              expect(cc_updater).to receive(:processing_upload).with(new_guid)
+              expect(cc_updater).to_not receive(:processing_upload)
               expect(cc_updater).to_not receive(:ready)
               expect(cc_updater).to receive(:failed).with(new_guid, 'copying failed')
               expect(response).to be
@@ -264,7 +256,7 @@ module BitsService
             end
 
             it 'updates the Cloud Controller' do
-              expect(cc_updater).to receive(:processing_upload).with(new_guid)
+              expect(cc_updater).to_not receive(:processing_upload)
               expect(cc_updater).to_not receive(:ready)
               expect(cc_updater).to receive(:failed).with(new_guid, 'No space left on device')
               expect(response).to be
@@ -281,7 +273,7 @@ module BitsService
             end
 
             it 'updates the Cloud Controller' do
-              expect(cc_updater).to receive(:processing_upload).with(new_guid)
+              expect(cc_updater).to_not receive(:processing_upload)
               expect(cc_updater).to_not receive(:ready)
               expect(cc_updater).to receive(:failed).with(new_guid, 'fetching failed')
               expect(response).to be
