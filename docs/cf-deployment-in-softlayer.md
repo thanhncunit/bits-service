@@ -91,7 +91,7 @@ bosh2 -e sl -d cf deploy ~/workspace/cf-deployment/cf-deployment.yml \
   --vars-store deployment-vars.yml \
   -v system_domain=cf-deployment.dynamic-dns.net \
   -o ~/workspace/cf-deployment/operations/scale-to-one-az.yml \
-  -o ~/workspace/bits-service-release/operations/change-stemcell.yml \
+  -o ~/workspace/bits-service-ci/operations/stemcell-version.yml \
   -v stemcell_version='3445.7.1' \
   --no-redact
 ```
@@ -123,7 +123,7 @@ bosh -e sl -d cf deploy ~/workspace/cf-deployment/cf-deployment.yml \
   --vars-store deployment-vars.yml \
   -v system_domain=cf-deployment.dynamic-dns.net \
   -o ~/workspace/cf-deployment/operations/scale-to-one-az.yml \
-  -o ~/workspace/bits-service-release/operations/change-stemcell.yml \
+  -o ~/workspace/bits-service-ci/operations/stemcell-version.yml \
   -v stemcell_version='3445.7.1' \
   -o ~/workspace/cf-deployment/operations/experimental/bits-service.yml \
   -o ~/workspace/cf-deployment/operations/experimental/bits-service-"${BLOBSTORE_TYPE}".yml \
@@ -139,7 +139,7 @@ bosh -e sl -d cf deploy ~/workspace/cf-deployment/cf-deployment.yml \
   --vars-store deployment-vars.yml \
   -v system_domain=cf-deployment.dynamic-dns.net \
   -o ~/workspace/cf-deployment/operations/scale-to-one-az.yml \
-  -o ~/workspace/bits-service-release/operations/change-stemcell.yml \
+  -o ~/workspace/bits-service-ci/operations/stemcell-version.yml \
   -v stemcell_version='3445.7.1' \
   -o ~/workspace/cf-deployment/operations/experimental/bits-service.yml \
   -o ~/workspace/cf-deployment/operations/experimental/bits-service-"${BLOBSTORE_TYPE}".yml \
