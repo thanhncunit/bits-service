@@ -23,7 +23,7 @@ module BitsService
       def sign_local(path)
         expires = Time.now.utc.to_i + 3600
         signature = signer.sign("/signed/#{path}", expires)
-        raise 'Configuration for public_endpoint should start with http://' unless public_endpoint.start_with?('http://')
+        raise 'Configuration for public_endpoint should start with https://' unless public_endpoint.start_with?('https://')
         "#{public_endpoint}/signed/#{path}?md5=#{signature}&expires=#{expires}"
       end
 
