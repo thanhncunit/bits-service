@@ -1,4 +1,5 @@
 require_relative './base'
+require_relative '../services/digest_header_parser'
 
 module BitsService
   module Routes
@@ -15,6 +16,19 @@ module BitsService
         ensure
           FileUtils.rm_f(uploaded_filepath) if uploaded_filepath
         end
+      end
+
+      put '/droplets/:guid' do |guid|
+        uploaded_filepath = request.env['HTTP_DROPLET_FILE']
+
+        begin
+          digest_expected = DigestHeaderParser.new('sha256').parse(request.env['HTTP_DIGEST'])
+        rescue => e
+          fail Errors::ApiError.new_from_details('DropletUploadInvalid', e.message)
+        end
+
+        create_from_upload(uploaded_filepath, "#{guid}/#{digest_expected}")
+        status 201
       end
 
       get %r{^/droplets/(.*/.*)} do |path|

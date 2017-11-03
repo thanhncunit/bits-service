@@ -53,6 +53,20 @@ module BitsService
       end
 
       describe 'PUT /droplets/:guid' do
+        let(:guid) { SecureRandom.uuid }
+        let(:digest) { Digest::SHA2.new(256).hexdigest(File.read(zip_filepath)) }
+
+        it 'returns HTTP status 201' do
+          put "/droplets/#{guid}", "File.read(zip_filepath)", {
+            'HTTP_DIGEST' => "sha256=#{digest}",
+            'HTTP_DROPLET_FILE' => zip_filepath,
+            'Content-Type' => 'application/octet-stream',
+          }
+          expect(last_response.status).to eq(201)
+        end
+      end
+
+      describe 'PUT /droplets/:guid' do
         before do
           allow_any_instance_of(Helpers::Upload::Params).to receive(:upload_filepath).and_return(zip_filepath)
         end
