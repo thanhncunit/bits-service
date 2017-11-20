@@ -20,7 +20,7 @@ A package are the files that make up an application from the developer's point o
 > Example request:
 
 ```shell
-curl -X PUT 'http://internal.example.com/packages/c33e184b-e698-4290-952e-4047601e4627' \
+curl -X PUT 'https://internal.example.com/packages/c33e184b-e698-4290-952e-4047601e4627' \
   -F package=@package-file
 ```
 
@@ -48,7 +48,7 @@ Internal endpoint only
 > Example request:
 
 ```shell
-curl -X GET 'http://internal.example.com/packages/c33e184b-e698-4290-952e-4047601e4627'
+curl -X GET 'https://internal.example.com/packages/c33e184b-e698-4290-952e-4047601e4627'
 ```
 
 > Example response when backend is S3:
@@ -78,7 +78,7 @@ Internal endpoint only
 > Example request:
 
 ```shell
-curl -X DELETE 'http://internal.example.com/packages/c33e184b-e698-4290-952e-4047601e4627'
+curl -X DELETE 'https://internal.example.com/packages/c33e184b-e698-4290-952e-4047601e4627'
 ```
 
 > Example response:
@@ -104,7 +104,7 @@ A droplet is the result of staging an application package. It contains the bits 
 > Example request:
 
 ```shell
-curl -X PUT 'http://internal.example.com/droplets/c33e184b-e698-4290-952e-4047601e4627/b1d2a97c5033319632e65beba49dd92da18c1d20' \
+curl -X PUT 'https://internal.example.com/droplets/c33e184b-e698-4290-952e-4047601e4627/b1d2a97c5033319632e65beba49dd92da18c1d20' \
   -F droplet=@droplet-file
 ```
 
@@ -132,7 +132,7 @@ Internal endpoint only
 > Example request:
 
 ```shell
-curl -X GET 'http://internal.example.com/droplets/c33e184b-e698-4290-952e-4047601e4627/b1d2a97c5033319632e65beba49dd92da18c1d20'
+curl -X GET 'https://internal.example.com/droplets/c33e184b-e698-4290-952e-4047601e4627/b1d2a97c5033319632e65beba49dd92da18c1d20'
 ```
 
 > Example response when backend is S3:
@@ -162,7 +162,7 @@ Internal endpoint only
 > Example request:
 
 ```shell
-curl -X DELETE 'http://internal.example.com/droplets/c33e184b-e698-4290-952e-4047601e4627/b1d2a97c5033319632e65beba49dd92da18c1d20'
+curl -X DELETE 'https://internal.example.com/droplets/c33e184b-e698-4290-952e-4047601e4627/b1d2a97c5033319632e65beba49dd92da18c1d20'
 ```
 
 > Example response:
@@ -188,7 +188,7 @@ A buildpack provides the components necessary to run an application, e.g. the co
 > Example request:
 
 ```shell
-curl -X PUT 'http://internal.example.com/buildpacks/c33e184b-e698-4290-952e-4047601e4627' \
+curl -X PUT 'https://internal.example.com/buildpacks/c33e184b-e698-4290-952e-4047601e4627' \
   -F buildpack=@buildpack-file
 ```
 
@@ -214,7 +214,7 @@ Internal endpoint only
 > Example request:
 
 ```shell
-curl -X GET 'http://internal.example.com/buildpacks/c33e184b-e698-4290-952e-4047601e4627'
+curl -X GET 'https://internal.example.com/buildpacks/c33e184b-e698-4290-952e-4047601e4627'
 ```
 
 > Example response when backend is S3:
@@ -244,7 +244,7 @@ Internal endpoint only
 > Example request:
 
 ```shell
-curl -X DELETE 'http://internal.example.com/buildpacks/c33e184b-e698-4290-952e-4047601e4627'
+curl -X DELETE 'https://internal.example.com/buildpacks/c33e184b-e698-4290-952e-4047601e4627'
 ```
 
 > Example response:
@@ -270,7 +270,7 @@ A buildpack may choose to cache certain dependencies of an app (e.g. Node module
 > Example request:
 
 ```shell
-curl -X PUT 'http://internal.example.com/buildpack_cache/entries/83d28f59-d3f7-4d00-9a10-459a69649a87/cflinux' \
+curl -X PUT 'https://internal.example.com/buildpack_cache/entries/83d28f59-d3f7-4d00-9a10-459a69649a87/cflinux' \
   -F buildpack_cache=@buildpack-cache
 ```
 
@@ -296,7 +296,7 @@ Internal endpoint only
 > Example request:
 
 ```shell
-curl -X GET 'http://internal.example.com/buildpack_cache/entries/83d28f59-d3f7-4d00-9a10-459a69649a87/cflinux'
+curl -X GET 'https://internal.example.com/buildpack_cache/entries/83d28f59-d3f7-4d00-9a10-459a69649a87/cflinux'
 ```
 
 > Example response when backend is S3:
@@ -326,7 +326,7 @@ Internal endpoint only
 > Example request:
 
 ```shell
-curl -X DELETE 'http://internal.example.com/buildpack_cache/entries/83d28f59-d3f7-4d00-9a10-459a69649a87/cflinux'
+curl -X DELETE 'https://internal.example.com/buildpack_cache/entries/83d28f59-d3f7-4d00-9a10-459a69649a87/cflinux'
 ```
 
 > Example response:
@@ -348,7 +348,7 @@ Internal endpoint only
 > Example request:
 
 ```shell
-curl -X DELETE 'http://internal.example.com/buildpack_cache/entries/83d28f59-d3f7-4d00-9a10-459a69649a87'
+curl -X DELETE 'https://internal.example.com/buildpack_cache/entries/83d28f59-d3f7-4d00-9a10-459a69649a87'
 ```
 
 > Example response:
@@ -370,7 +370,7 @@ Internal endpoint only
 > Example request:
 
 ```shell
-curl -X DELETE 'http://internal.example.com/buildpack_cache/entries'
+curl -X DELETE 'https://internal.example.com/buildpack_cache/entries'
 ```
 
 > Example response:
@@ -394,7 +394,7 @@ App Stash optimizes the repeated app push, so that unchanged files need not to b
 > Example request:
 
 ```shell
-curl -X POST 'http://internal.example.com/app_stash/matches' \
+curl -X POST 'https://internal.example.com/app_stash/matches' \
     -d '[{
           "sha1": "8b381f8864b572841a26266791c64ae97738a659",
           "size": 534567
@@ -442,7 +442,7 @@ Internal endpoint only
 > Example request:
 
 ```shell
-curl -X POST 'http://internal.example.com/app_stash/entries' \
+curl -X POST 'https://internal.example.com/app_stash/entries' \
   -F application=@entries
 ```
 
@@ -474,7 +474,7 @@ Internal endpoint only
 > Example request:
 
 ```shell
-curl -X POST 'http://internal.example.com/app_stash/bundles' \
+curl -X POST 'https://internal.example.com/app_stash/bundles' \
      -d '[{
            "sha1": "8b381f8864b572841a26266791c64ae97738a659",
            "fn":   "script.rb",
@@ -515,7 +515,7 @@ In order to prevent leakage of resources, all external access to the Bits-Servic
 > Example request:
 
 ```shell
-curl 'http://username:password@internal.example.com/sign/packages/bdf47b84-1349-4abd-9561-5004858dfa05?verb=put'
+curl 'https://username:password@internal.example.com/sign/packages/bdf47b84-1349-4abd-9561-5004858dfa05?verb=put'
 ```
 
 > Example response:
@@ -523,7 +523,7 @@ curl 'http://username:password@internal.example.com/sign/packages/bdf47b84-1349-
 ```shell
 HTTP/1.1 200 OK
 
-http://bits-service.example.com/signed/packages/test-package?md5=yBh47LwYRQ4d8SG6mNsL4w&expires=1497357804
+https://bits-service.example.com/signed/packages/test-package?md5=yBh47LwYRQ4d8SG6mNsL4w&expires=1497357804
 ```
 
 ### HTTP Request
@@ -542,7 +542,7 @@ Internal endpoint only
 > Example signed upload:
 
 ```shell
-curl -X PUT 'http://internal.example.com/signed/packages/bdf47b84-1349-4abd-9561-5004858dfa05?md5=YDjcMjytsnVEzoSxqpiC4A&expires=1492594615' \
+curl -X PUT 'https://internal.example.com/signed/packages/bdf47b84-1349-4abd-9561-5004858dfa05?md5=YDjcMjytsnVEzoSxqpiC4A&expires=1492594615' \
   -F package=@package-file
 ```
 
