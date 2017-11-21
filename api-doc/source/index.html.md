@@ -127,6 +127,41 @@ If the body is not a file upload, but contains a `:source_guid`, its value is tr
 ### Access
 Internal endpoint only
 
+## Uploading a Droplet with Digest in Header
+
+> Example request:
+
+```shell
+curl --request PUT --header 'Digest: sha256=abcdefg' --data-binary @droplet-file 'https://example.com/signed/droplets/4facf67a-2880-4367-928e-b4c88f63bcda?md5=tDTwS8DEdA0T-b0RRx_TIw&expires=1510839810'
+```
+
+> Example response:
+
+```shell
+HTTP/1.1 201 Created
+```
+
+### HTTP Request
+`PUT /droplets/:guid`
+
+where `:guid` is the droplet's GUID.
+
+### Request Headers
+
+`Digest: sha256=abcdefg`
+
+The format of the `Digest` header's value is `<Algorithm>=<Value>`. Currently only `sha256` is supported.
+
+### Request Body
+
+`content-of-droplet-file`
+
+The body will always be treated as `application/octet-stream`.
+
+### Access
+
+This endpoint is public and can only be used with a signed URL.
+
 ## Downloading a Droplet
 
 > Example request:
