@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 export IGNORE='(RSA PRIVATE KEY---|see below|c1oudc0w)'
 
