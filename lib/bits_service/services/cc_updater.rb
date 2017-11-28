@@ -1,16 +1,15 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'bits_service/services/body_builder'
 
 module BitsService
   class NullUpdater
-    def processing_upload(*_)
-    end
+    def processing_upload(*_); end
 
-    def failed(*_)
-    end
+    def failed(*_); end
 
-    def ready(*_)
-    end
+    def ready(*_); end
   end
 
   class CCUpdater

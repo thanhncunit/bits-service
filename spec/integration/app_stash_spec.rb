@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'app_stash endpoint', type: :integration do
@@ -82,7 +84,7 @@ describe 'app_stash endpoint', type: :integration do
     end
 
     context 'when the file is missing' do
-      let(:request_body) { Hash.new }
+      let(:request_body) { {} }
 
       it 'returns 400 status' do
         response = make_post_request('/app_stash/entries', request_body)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'securerandom'
 require 'sham'
 
@@ -23,6 +25,6 @@ Sham.define do
   extra               { |index| "extra-#{index}" }
   instance_index      { |index| index }
   unique_id           { |index| "unique-id-#{index}" }
-  status              { |_| %w(active suspended cancelled).sample(1).first }
+  status              { |_| %w[active suspended cancelled].sample(1).first }
   error_message       { |index| "error-message-#{index}" }
 end

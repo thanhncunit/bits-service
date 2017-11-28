@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 module BitsService
   module Routes
     describe Packages do
       let(:blobstore) { double(Blobstore::Client) }
-      let(:headers) { Hash.new }
+      let(:headers) { {} }
       let(:cc_updater) { double(CCUpdater) }
       let(:guid) { SecureRandom.uuid }
 

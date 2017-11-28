@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'securerandom'
 
@@ -15,7 +17,7 @@ module BitsService
       let(:non_zip_file) do
         Rack::Test::UploadedFile.new(Tempfile.new('foo'))
       end
-      let(:headers) { Hash.new }
+      let(:headers) { {} }
       let(:zip_filename) { 'file.zip' }
       let(:guid) { "#{SecureRandom.uuid}/#{SecureRandom.uuid}" }
       let(:blobstore) { double(BitsService::Blobstore::Client) }
@@ -57,7 +59,7 @@ module BitsService
         let(:digest) { Digest::SHA2.new(256).hexdigest(File.read(zip_filepath)) }
 
         it 'returns HTTP status 201' do
-          put "/droplets/#{guid}", "File.read(zip_filepath)", {
+          put "/droplets/#{guid}", 'File.read(zip_filepath)', {
             'HTTP_DIGEST' => "sha256=#{digest}",
             'HTTP_DROPLET_FILE' => zip_filepath,
             'Content-Type' => 'application/octet-stream',

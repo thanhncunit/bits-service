@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bits_service/routes/app_stash'
 require 'bits_service/routes/base'
 require 'bits_service/routes/buildpack_cache'

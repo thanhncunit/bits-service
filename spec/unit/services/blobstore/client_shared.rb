@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples_for 'a blobstore client' do
   let!(:tmpfile) do
     Tempfile.open('') do |tmpfile|

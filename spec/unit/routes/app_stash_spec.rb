@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 module BitsService
   describe Routes::AppStash do
     let(:blobstore) { double(Blobstore::Client) }
-    let(:headers) { Hash.new }
+    let(:headers) { {} }
     before do
       allow_any_instance_of(Routes::AppStash).to receive(:app_stash_blobstore).and_return(blobstore)
     end

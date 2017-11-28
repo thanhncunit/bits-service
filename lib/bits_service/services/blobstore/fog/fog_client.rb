@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'fileutils'
 require 'find'
 require 'fog'
@@ -66,9 +68,10 @@ module BitsService
             logger.debug('blobstore.cp-retry',
                          error: e,
                          destination_key: destination_key,
-                         remaining_retries: retries
-                        )
+                         remaining_retries: retries)
             retries -= 1
+
+            # rubocop:disable Style/NumericPredicate
             retry unless retries < 0
             raise e
           end
@@ -80,8 +83,7 @@ module BitsService
         logger.info(log_entry,
                     destination_key: destination_key,
                     duration_seconds: duration,
-                    size: size,
-                   )
+                    size: size,)
       end
 
       def cp_file_between_keys(source_key, destination_key)
@@ -173,7 +175,6 @@ module BitsService
             batch = []
           end
         end
-
         if batch.length > 0
           yield(batch)
         end

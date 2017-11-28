@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'webrick'
 require_relative '../client_shared'
 require 'fog/aws/models/storage/files'
 
+# rubocop:disable Naming/VariableNumber
 module BitsService
   module Blobstore
     describe FogClient do
@@ -199,7 +202,7 @@ module BitsService
             before do
               upload_tmpfile(client, sha_of_content)
               @original_umask = File.umask
-              File.umask(0022)
+              File.umask(0o022)
             end
 
             after do
@@ -218,7 +221,7 @@ module BitsService
             context 'when specifying a mode' do
               it 'does change permissions on the file' do
                 destination = File.join(local_dir, 'some_directory_to_place_file', 'downloaded_file')
-                client.download_from_blobstore(sha_of_content, destination, mode: 0753)
+                client.download_from_blobstore(sha_of_content, destination, mode: 0o753)
 
                 expect(sprintf('%o', File.stat(destination).mode)).to eq('100753')
               end

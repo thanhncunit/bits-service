@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ConfigFileHelpers
   def create_config_file(config={})
     file = Tempfile.new('test_config')

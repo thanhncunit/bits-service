@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BitsService
   class Digester
     ALGORITHM = Digest::SHA1

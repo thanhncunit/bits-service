@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module IntegrationSetup
   def start_server(config={})
     @config_filepath = create_config_file(config)

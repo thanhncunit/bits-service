@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'bits_service/services/blobstore/fog/cdn'
 require 'cloudfront-signer'

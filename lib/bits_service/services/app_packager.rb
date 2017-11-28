@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'find'
 require 'open3'
 require 'shellwords'
@@ -109,7 +111,7 @@ module BitsService
     end
 
     def empty_directory?(dir)
-      (Dir.entries(dir) - %w(.. .)).empty?
+      (Dir.entries(dir) - %w[.. .]).empty?
     end
 
     def invalid_zip!

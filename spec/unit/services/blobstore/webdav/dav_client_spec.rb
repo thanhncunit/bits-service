@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require_relative '../client_shared'
 
@@ -208,7 +210,7 @@ module BitsService
         describe 'file permissions' do
           before do
             @original_umask = File.umask
-            File.umask(0022)
+            File.umask(0o022)
           end
 
           after do
@@ -231,7 +233,7 @@ module BitsService
               allow(response).to receive_messages(status: 200)
               allow(httpclient).to receive(:get).and_yield('content').and_return(response)
 
-              client.download_from_blobstore('foobar', destination_path, mode: 0753)
+              client.download_from_blobstore('foobar', destination_path, mode: 0o753)
 
               expect(sprintf('%o', File.stat(destination_path).mode)).to eq('100753')
             end
@@ -421,10 +423,12 @@ module BitsService
 
           expect(httpclient).to have_received(:put).thrice
           expect(httpclient).to have_received(:put).with(
-            "http://localhost/admin/droplets/#{tmpfile1_sha[0..1]}/#{tmpfile1_sha[2..3]}/#{tmpfile1_sha}", a_kind_of(File), {})
+            "http://localhost/admin/droplets/#{tmpfile1_sha[0..1]}/#{tmpfile1_sha[2..3]}/#{tmpfile1_sha}", a_kind_of(File), {}
+)
           expect(httpclient).to have_received(:put).with("http://localhost/admin/droplets/#{tmpfile2_sha[0..1]}/#{tmpfile2_sha[2..3]}/#{tmpfile2_sha}", a_kind_of(File), {})
           expect(httpclient).to have_received(:put).with(
-            "http://localhost/admin/droplets/#{nested_tmpfile1_sha[0..1]}/#{nested_tmpfile1_sha[2..3]}/#{nested_tmpfile1_sha}", a_kind_of(File), {})
+            "http://localhost/admin/droplets/#{nested_tmpfile1_sha[0..1]}/#{nested_tmpfile1_sha[2..3]}/#{nested_tmpfile1_sha}", a_kind_of(File), {}
+)
         end
 
         context 'when a file already exists in the blobstore' do
@@ -441,7 +445,8 @@ module BitsService
 
             expect(httpclient).to have_received(:put).twice
             expect(httpclient).not_to have_received(:put).with(
-              "http://localhost/admin/droplets/#{nested_tmpfile1_sha[0..1]}/#{nested_tmpfile1_sha[2..3]}/#{nested_tmpfile1_sha}", a_kind_of(File), {})
+              "http://localhost/admin/droplets/#{nested_tmpfile1_sha[0..1]}/#{nested_tmpfile1_sha[2..3]}/#{nested_tmpfile1_sha}", a_kind_of(File), {}
+)
           end
         end
 
@@ -466,7 +471,8 @@ module BitsService
               client.cp_r_to_blobstore(source_dir)
 
               expect(httpclient).not_to have_received(:put).with(
-                "http://localhost/admin/droplets/#{small_file_sha[0..1]}/#{small_file_sha[2..3]}/#{small_file_sha}", a_kind_of(File), {})
+                "http://localhost/admin/droplets/#{small_file_sha[0..1]}/#{small_file_sha[2..3]}/#{small_file_sha}", a_kind_of(File), {}
+)
             end
           end
 
@@ -486,7 +492,8 @@ module BitsService
               client.cp_r_to_blobstore(source_dir)
 
               expect(httpclient).not_to have_received(:put).with(
-                "http://localhost/admin/droplets/#{large_file_sha[0..1]}/#{large_file_sha[2..3]}/#{large_file_sha}", a_kind_of(File), {})
+                "http://localhost/admin/droplets/#{large_file_sha[0..1]}/#{large_file_sha[2..3]}/#{large_file_sha}", a_kind_of(File), {}
+)
             end
           end
         end

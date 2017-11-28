@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 module BitsService
@@ -32,7 +34,7 @@ module BitsService
       end
 
       context 'with a valid config' do
-        let(:config) {{
+        let(:config) { {
             cc_updates: {
               ca_cert: File.expand_path('../../../certificates/ca.crt', __FILE__),
               client_cert: File.expand_path('../../../certificates/server.crt', __FILE__),

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'bits_service/services/blobstore/webdav/nginx_secure_link_signer'
 

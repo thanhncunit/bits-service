@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'bits_service/services/blobstore/null_client'
 require_relative 'client_shared'

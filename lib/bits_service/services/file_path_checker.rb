@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BitsService
   class FilePathChecker
     def self.safe_path?(child_path, root_path=Dir.tmpdir)

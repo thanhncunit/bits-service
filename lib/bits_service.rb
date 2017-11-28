@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bits_service/environment'
 require 'bits_service/errors'
 require 'bits_service/helpers'

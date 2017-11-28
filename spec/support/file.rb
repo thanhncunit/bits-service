@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FileHelpers
   def blob_path(root_dir, directory_key, key)
     File.join(

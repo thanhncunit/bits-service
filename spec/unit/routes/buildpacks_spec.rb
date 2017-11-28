@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'securerandom'
 
 module BitsService
   module Routes
     describe Buildpacks do
-      let(:headers) { Hash.new }
+      let(:headers) { {} }
 
       let(:zip_filename) { 'file.zip' }
 

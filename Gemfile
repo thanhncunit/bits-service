@@ -1,33 +1,35 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
-gem 'rake'
-gem 'sinatra', '~> 1.4'
-gem 'fog'
-gem 'i18n'
-gem 'httpclient'
-gem 'steno'
-gem 'mime-types', '~> 2.6.2'
 gem 'activesupport'
-gem 'puma'
 gem 'cloudfront-signer'
-gem 'statsd-ruby'
+gem 'fog'
+gem 'httpclient'
+gem 'i18n'
+gem 'mime-types', '~> 2.6.2'
+gem 'puma'
+gem 'rake'
 gem 'rubyzip'
+gem 'sinatra', '~> 1.4'
+gem 'statsd-ruby'
+gem 'steno'
 
 group :development do
+  gem 'guard-bundler', require: false
+  gem 'guard-rspec', require: false
+  gem 'guard-shell'
+  gem 'machinist', '~> 1.0.6'
+  gem 'posix-spawn'
+  gem 'pry-byebug'
+  gem 'rack-test'
+  gem 'rb-readline'
+  gem 'rest-client'
   gem 'rspec'
   gem 'rspec-collection_matchers'
   gem 'rspec-json_expectations'
-  gem 'rack-test'
-  gem 'posix-spawn'
+  gem 'rubocop'
+  gem 'stub_server'
   gem 'timecop'
   gem 'webmock'
-  gem 'rest-client'
-  gem 'rubocop'
-  gem 'guard-shell'
-  gem 'guard-rspec', require: false
-  gem 'guard-bundler', require: false
-  gem 'pry-byebug'
-  gem 'machinist', '~> 1.0.6'
-  gem 'rb-readline'
-  gem 'stub_server'
 end

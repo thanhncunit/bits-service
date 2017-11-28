@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bits_service/services/blobstore/base_client'
 require 'bits_service/services/blobstore/errors'
 require 'bits_service/services/blobstore/webdav/dav_blob'
@@ -94,8 +96,7 @@ module BitsService
         logger.info(log_entry,
           destination_key:  destination_key,
           duration_seconds: duration,
-          size:             size,
-        )
+          size:             size,)
       end
 
       def cp_file_between_keys(source_key, destination_key)
@@ -200,10 +201,10 @@ module BitsService
           {
             error:             e,
             remaining_retries: retries
-          }.merge(log_data)
-        )
+          }.merge(log_data))
 
         retries -= 1
+        # rubocop:disable Style/NumericPredicate
         retry unless retries < 0
         raise e
       end

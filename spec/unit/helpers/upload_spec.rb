@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 module BitsService
@@ -18,7 +20,7 @@ module BitsService
           end
 
           context 'when the name param does not exist' do
-            let(:params) { Hash.new }
+            let(:params) { {} }
 
             it 'returns nil' do
               expect(subject.original_filename(key)).to be_nil

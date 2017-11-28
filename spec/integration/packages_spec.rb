@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'stub_server'
 require 'open-uri'
@@ -219,7 +221,7 @@ describe 'packages resource', type: :integration do
     let(:replies) do
       {
         "/packages/#{guid}" => [status_code, {}, []],
-        "/packages/dummy-source-guid" => [204, {}, []],
+        '/packages/dummy-source-guid' => [204, {}, []],
       }
     end
     let(:source_guid) do

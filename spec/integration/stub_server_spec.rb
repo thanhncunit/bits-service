@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'stub_server'
 require 'open-uri'
@@ -11,7 +13,8 @@ module BitsService
     #
     let(:ssl) do {
       cert: File.read('spec/certificates/server.crt'),
-      key: File.read('spec/certificates/server.key') }
+      key: File.read('spec/certificates/server.key')
+}
     end
 
     context 'the test server works' do

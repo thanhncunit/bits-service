@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 #
 # Render textual input as web sequence diagram
@@ -25,5 +26,5 @@ response = Net::HTTP.post_form(
   'message' => src
 )
 
-appendix = YAML.load(response.body)['img']
+appendix = YAML.safe_load(response.body)['img']
 File.write(target, open("http://www.websequencediagrams.com/#{appendix}").read)

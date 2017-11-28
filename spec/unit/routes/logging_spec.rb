@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 module BitsService
   module Routes
     describe 'logger' do
-      let(:headers) { Hash.new }
+      let(:headers) { {} }
 
       let(:config) do
         {

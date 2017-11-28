@@ -1,16 +1,21 @@
+# frozen_string_literal: true
+
 require_relative './base'
 require 'fileutils'
 
 module BitsService
   module Routes
     class AppStash < Base
-      DEFAULT_FILE_MODE = 0744
+      DEFAULT_FILE_MODE = 0o744
 
       post '/app_stash/entries' do
         uploaded_filepath = upload_params.upload_filepath('application')
-        fail Errors::ApiError.new_from_details(
-          'AppBitsUploadInvalid',
-          'missing key `application`') unless uploaded_filepath
+        unless uploaded_filepath
+          fail Errors::ApiError.new_from_details(
+            'AppBitsUploadInvalid',
+            'missing key `application`'
+)
+        end
 
         destination_path = Dir.mktmpdir('app_stash')
 
@@ -67,7 +72,7 @@ module BitsService
 
       def parse_mode!(raw_mode)
         (raw_mode ? raw_mode.to_i(8) : DEFAULT_FILE_MODE).tap do |mode|
-          raise Errors::ApiError.new_from_details('AppResourcesFileModeInvalid', "File mode '#{raw_mode}' is invalid.") unless (mode & 0600) == 0600
+          raise Errors::ApiError.new_from_details('AppResourcesFileModeInvalid', "File mode '#{raw_mode}' is invalid.") unless (mode & 0o600) == 0o600
         end
       end
 

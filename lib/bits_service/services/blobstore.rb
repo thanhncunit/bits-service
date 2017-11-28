@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bits_service/services/blobstore/blob'
 require 'bits_service/services/blobstore/webdav'
 require 'bits_service/services/blobstore/fog'

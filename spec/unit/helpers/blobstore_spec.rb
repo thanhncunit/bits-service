@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 module BitsService
@@ -65,7 +67,7 @@ module BitsService
           end
 
           context 'when config is missing the :buildpacks key' do
-            let(:config) { Hash.new }
+            let(:config) { {} }
 
             it 'throws an exception' do
               expect { subject.buildpack_blobstore }.to raise_error(KeyError, /:buildpacks/)
@@ -115,7 +117,7 @@ module BitsService
           end
 
           context 'when config is missing the :droplets key' do
-            let(:config) { Hash.new }
+            let(:config) { {} }
 
             it 'throws an exception' do
               expect { subject.buildpack_cache_blobstore }.to raise_error(KeyError, /:droplets/)
@@ -165,7 +167,7 @@ module BitsService
           end
 
           context 'when config is missing the :droplets key' do
-            let(:config) { Hash.new }
+            let(:config) { {} }
 
             it 'throws an exception' do
               expect { subject.droplet_blobstore }.to raise_error(KeyError, /:droplets/)
@@ -215,7 +217,7 @@ module BitsService
           end
 
           context 'when config is missing the :droplets key' do
-            let(:config) { Hash.new }
+            let(:config) { {} }
 
             it 'throws an exception' do
               expect { subject.packages_blobstore }.to raise_error(KeyError, /:packages/)
@@ -275,7 +277,7 @@ module BitsService
         end
 
         context 'when config is missing the :buildpacks key' do
-          let(:config) { Hash.new }
+          let(:config) { {} }
 
           it 'throws an exception' do
             expect { subject.app_stash_blobstore }.to raise_error(KeyError, /:app_stash/)
