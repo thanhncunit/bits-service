@@ -15,7 +15,7 @@ module BitsService
       end
 
       let(:zip_file) do
-        Rack::Test::UploadedFile.new(File.new(zip_filepath))
+        Rack::Test::UploadedFile.new(zip_filepath)
       end
 
       let(:non_zip_file) do
