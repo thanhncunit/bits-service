@@ -64,20 +64,9 @@ chmod +x spruce-linux-amd64
 mv spruce-linux-amd64 /usr/local/bin/spruce
 ```
 
-# Set up IP routing for bosh-lites
+# Expose port-forwards to external connections
 
-## acceptance
-
-ssh into the bare-metal box 'acceptance' and execute:
-
-```
-echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
-ip route add 10.250.0.0/16 via 192.168.150.4
-
-cd ~/workspace/bosh-lite
-vagrant ssh
-sudo ip route add 10.155.248.0/24 via 192.168.150.1 dev eth1
-```
+Add `GatewayPorts yes` to `/etc/ssh/ssh_config` on the baremetals.
 
 # Update bosh-lite
 
@@ -93,19 +82,18 @@ vim Vagrantfile
 
 In the Vagrantfile increase the number of CPUs and add port forwarding:
 
-```
+```ruby
 Vagrant.configure('2') do |config|
   config.vm.box = 'cloudfoundry/bosh-lite'
   
-  # For bosh2
-  config.vm.network :private_network, ip: '192.168.100.4', id: :local 
-
   config.vm.provider :virtualbox do |v, override|
     override.vm.box_version = '9000.94.0' # ci:replace
 
-    # ADD THE FOLLOWING 2 LINES:
+    # ADD THE FOLLOWING 4 LINES:
     v.cpus = 7
     override.vm.network "forwarded_port", guest: 25555, host: 25555
+    override.vm.network "forwarded_port", guest: 80, host: 80
+    override.vm.network "forwarded_port", guest: 443, host: 443
 
     # To use a different IP address for the bosh-lite director, uncomment this line:
     # override.vm.network :private_network, ip: '192.168.59.4', id: :local
@@ -132,8 +120,66 @@ sudo apt-get update
 sudo apt-get install cf-cli
 ```
 
+# ssh key setup for Concourse
+The following might be necessary in the future, when we use bosh-lites that are not set up through vagrant and hence need other ways to port-foward to the VirtualBox VM. Note that this does not work entirely yet. While the tunnels can be set up successfully, using them with `curl` or `cf` does not work. It might be necessary to make more system changes on the baremetal machine to expose the ports to external connections.
+
+On the baremetal machine, create an executable file `/root/workspace/set-up-authorized-keys.sh`:
+
+```bash
+#!/bin/bash -ex
+
+export SSH_PUB_KEY=$(ssh-keygen -y -f ~/.ssh/id_rsa_boshlite)
+
+cd ~/workspace/bosh-lite
+vagrant ssh -c "sudo sh -c "'"'"mkdir -p /root/.ssh && echo $SSH_PUB_KEY > /root/.ssh/authorized_keys"'"'""
+```
+
+In the Concourse task script, do:
+
+```bash
+function setup_ssh() {
+  echo "$SSH_KEY" >$PWD/.ssh-key
+  chmod 600 $PWD/.ssh-key
+  mkdir -p ~/.ssh && chmod 700 ~/.ssh
+  local ip=$(echo $SSH_CONNECTION_STRING | cut -d "@" -f2)
+  ssh-keyscan -t rsa,dsa $ip >>~/.ssh/known_hosts
+}
+
+function is_tunnel_up() {
+  ssh $conn_str "nc -z localhost $1"
+}
+
+function wait_for_tunnel() {
+  local result=1
+  local n=0
+  until [ $n -ge 5 ]; do
+    if is_tunnel_up $1; then
+      result=0
+      break
+    fi
+
+    n=$(($n + 1))
+    sleep 1
+  done
+
+  return $result
+}
+
+setup_ssh
+conn_str="$SSH_CONNECTION_STRING -i $PWD/.ssh-key"
+ssh $conn_str "~/workspace/set-up-authorized-keys.sh "'"'"$SSH_KEY"'"'""
+ssh $conn_str "echo "'"'"$SSH_KEY"'"'" > ~/.ssh/id_rsa_boshlite"
+ssh $conn_str "chmod 600 ~/.ssh/id_rsa_boshlite"
+ssh $conn_str "ssh root@192.168.50.4 -i ~/.ssh/id_rsa_boshlite -L 80:10.244.0.34:80 -N" &
+ssh $conn_str "ssh root@192.168.50.4 -i ~/.ssh/id_rsa_boshlite -L 443:10.244.0.34:443 -N" &
+wait_for_tunnel 80
+wait_for_tunnel 443
+ssh $conn_str "rm -f ~/.ssh/id_rsa_boshlite"
+
+```
 
 # Probably deprecated
+
 
 ## Set up IP routing for bosh-lites
 
@@ -163,4 +209,19 @@ cd ~/workspace/bosh-lite
 vagrant ssh
 sudo ip route add 10.155.171.0/24 via 192.168.100.1 dev eth1
 sudo ip route add 10.155.248.0/24 via 192.168.100.1 dev eth1
+```
+
+# Set up IP routing for bosh-lites
+
+## acceptance
+
+ssh into the bare-metal box 'acceptance' and execute:
+
+```
+echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
+ip route add 10.250.0.0/16 via 192.168.150.4
+
+cd ~/workspace/bosh-lite
+vagrant ssh
+sudo ip route add 10.155.248.0/24 via 192.168.150.1 dev eth1
 ```
