@@ -13,14 +13,11 @@ CC-->cf: 201 $UPLOAD_URL
 cf->cf: create package.zip
 cf->Bits-Service: POST $UPLOAD_URL package.zip
 activate Bits-Service
-Bits-Service-->cf: 201
 Bits-Service->Bits-Service: extract PACKAGE_GUID\n from $UPLOAD_URL
 Bits-Service->CC: package PROCESSING $PACKAGE_GUID
 Bits-Service->Bits-Service: calc SHA1_PACKAGE_HASH,\nSHA256_PACKAGE_HASH
-cf->CC: package state?
-CC-->cf: processing
 Bits-Service->Blobstore: PUT package.zip
 Bits-Service->CC: package $PACKAGE_GUID READY\n$SHA1_PACKAGE_HASH, $SHA256_PACKAGE_HASH
 deactivate Bits-Service
-cf->CC: package state?
+Bits-Service-->cf: 201
 CC-->cf: ready
