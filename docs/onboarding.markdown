@@ -1,5 +1,6 @@
 # Onboarding a new Team Member
 
+* Get access to cloudfoundry.slack.com at https://slack.cloudfoundry.org/.
 * Get access to the [tracker](https://www.pivotaltracker.com/n/projects/1406862) (ask the PM)
 * Add team member to a group with access to the [repo](https://github.com/cloudfoundry-incubator/bits-service) (ask the PM)
 * Create a [SL](https://control.softlayer.com) account (ask the PM)
