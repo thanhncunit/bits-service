@@ -1,15 +1,17 @@
 # Onboarding a new Team Member
 
-* Get access to [cloudfoundry.slack.com](https://slack.cloudfoundry.org/)
-* Create an image for the tracker board (ask Steffen)
-* Get access to the [tracker](https://www.pivotaltracker.com/n/projects/1406862) (ask the PM)
-* Add team member to a group with access to the [repo](https://github.com/cloudfoundry-incubator/bits-service) (ask the PM)
-* Create a [SL](https://control.softlayer.com) account (ask the PM)
-* Create a [new VPN password](https://control.softlayer.com/account/user/profile) (DIY)
-* Set up the [VPN client](http://knowledgelayer.softlayer.com/procedure/ssl-vpn-mac-os-x-1010) (DIY)
-* Get access to shared Lastpass folder (ask the PM or anchor)
-* Invite team member to Bluemix Flintstone Account, Cloud Foundry Flintstone Org, performance tests Space
-* [Install git hooks](#install-git-hooks)
+* [ ] Copy this section into a new [Github issue](https://github.com/cloudfoundry-incubator/bits-service/issues/new)
+* [ ] Get access to [cloudfoundry.slack.com](https://slack.cloudfoundry.org/)
+* [ ] Create an image for the tracker board (ask Steffen)
+* [ ] Get access to the [tracker](https://www.pivotaltracker.com/n/projects/1406862) (ask the PM)
+* [ ] Add team member to a group with access to the [repo](https://github.com/cloudfoundry-incubator/bits-service) (ask the PM)
+* [ ] Create a [SL](https://control.softlayer.com) account (ask the PM)
+* [ ] Create a [new VPN password](https://control.softlayer.com/account/user/profile) (DIY)
+* [ ] Set up the [VPN client](http://knowledgelayer.softlayer.com/procedure/ssl-vpn-mac-os-x-1010) (DIY)
+* [ ] Get access to shared Lastpass folder (ask the PM or anchor)
+* [ ] Invite team member to Bluemix Flintstone Account, Cloud Foundry Flintstone Org, performance tests Space
+* [ ] [Install git hooks](#install-git-hooks)
+* [ ] Update [the onboarding document](https://github.com/cloudfoundry-incubator/bits-service/blob/master/docs/onboarding.markdown) if necessary
 
 # Team Communication
 
