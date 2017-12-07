@@ -13,7 +13,7 @@ cf->CC: POST /v3/builds :package_guid
 CC-->cf: build_guid
 CC->stager: stage
 loop until STAGED
-  cf->CC: /v3/builds/:build_guid
+  cf->CC: GET /v3/builds/:build_guid
 end
 cf->CC: PATCH /v3/apps/:app-guid/relationships/current_droplet\n :droplet_guid
 cf->CC: POST /v2/routes
