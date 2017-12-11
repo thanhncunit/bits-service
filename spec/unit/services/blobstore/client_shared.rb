@@ -72,6 +72,6 @@ shared_examples_for 'a blobstore client' do
   end
 
   it 'returns a blob object for a file by key' do
-    expect(subject.blob(key)).to be_a(BitsService::Blobstore::Blob)
+    expect(subject.blob(key)).to be
   end
 end

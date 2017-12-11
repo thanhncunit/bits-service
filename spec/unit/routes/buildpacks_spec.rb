@@ -183,7 +183,7 @@ module BitsService
         let(:download_url) { 'some-url' }
 
         let(:blob) do
-          double(BitsService::Blobstore::Blob, public_download_url: download_url)
+          double(public_download_url: download_url)
         end
 
         let(:blobstore) do
@@ -220,7 +220,7 @@ module BitsService
             let(:use_nginx) { true }
 
             let(:blob) do
-              double(BitsService::Blobstore::Blob, internal_download_url: download_url)
+              double(internal_download_url: download_url)
             end
 
             it 'returns HTTP status code 200' do
@@ -307,7 +307,7 @@ module BitsService
 
       describe 'DELETE /buildpacks/:guid' do
         let(:blob) do
-          double(BitsService::Blobstore::Blob)
+          double
         end
 
         let(:blobstore) do

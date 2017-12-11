@@ -10,7 +10,7 @@ module BitsService
       subject(:client) { described_class.new(wrapped_client, root_dir) }
       let(:wrapped_client) { NullClient.new }
       let(:root_dir) { 'root-dir' }
-      let(:deletable_blob) { Blob.new }
+      let(:deletable_blob) { double }
 
       it_behaves_like 'a blobstore client'
 

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'bits_service/services/blobstore/blob'
-
 module BitsService
   module Blobstore
     class Client

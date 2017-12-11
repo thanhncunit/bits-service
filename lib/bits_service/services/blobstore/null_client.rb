@@ -32,7 +32,7 @@ module BitsService
       end
 
       def blob(key)
-        Blob.new
+        Object.new
       end
     end
   end

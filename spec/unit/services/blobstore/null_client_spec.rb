@@ -8,7 +8,7 @@ module BitsService
   module Blobstore
     describe NullClient do
       subject(:client) { NullClient.new }
-      let(:deletable_blob) { instance_double(Blob) }
+      let(:deletable_blob) { double }
 
       it_behaves_like 'a blobstore client'
     end

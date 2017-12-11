@@ -4,7 +4,7 @@ require 'bits_service/services/blobstore/webdav/nginx_secure_link_signer'
 
 module BitsService
   module Blobstore
-    class DavBlob < Blob
+    class DavBlob
       attr_reader :key
 
       def initialize(httpmessage:, key:, signer:)
