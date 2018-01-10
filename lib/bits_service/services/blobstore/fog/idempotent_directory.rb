@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/AccessorMethodName
+# rubocop:disable Naming/AccessorMethodName
 module BitsService
   module Blobstore
     class IdempotentDirectory
@@ -14,4 +14,4 @@ module BitsService
     end
   end
 end
-# rubocop:enable Style/AccessorMethodName
+# rubocop:enable Naming/AccessorMethodName

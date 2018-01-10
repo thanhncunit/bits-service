@@ -16,22 +16,21 @@ module BitsService
 
         if uploaded_filepath.nil? && source_guid.nil?
           fail(ApiError.new_from_details('InvalidPackageSource').tap { |err|
-            # CloudController allows to set package state to FAILED or READY directly from AWAITING_UPLOAD
-            try_update_status(ignore_errors: true) { cc_updater.failed(guid, err.to_s) }
+            with_metric('failed', ignore_errors: true) { cc_updater.failed(guid, err.to_s) }
           })
         end
 
         begin
           if uploaded_filepath
-            try_update_status { cc_updater.processing_upload(guid) }
+            with_metric('processing_upload') { cc_updater.processing_upload(guid) }
             digests = create_from_upload(uploaded_filepath, guid)
-            try_update_status { cc_updater.ready(guid, digests) }
+            with_metric('ready') { cc_updater.ready(guid, digests) }
           elsif source_guid
             create_as_duplicate(source_guid, guid)
-            try_update_status { cc_updater.ready(guid) }
+            with_metric('ready') { cc_updater.ready(guid) }
           end
         rescue
-          try_update_status(ignore_errors: true) { cc_updater.failed(guid, $ERROR_INFO.to_s) }
+          with_metric('failed', ignore_errors: true) { cc_updater.failed(guid, $ERROR_INFO.to_s) }
           raise
         end
       end
@@ -102,6 +101,14 @@ module BitsService
 
       def cc_updater
         @cc_updater ||= produce_cc_updater(config[:cc_updates], mtls_client)
+      end
+
+      def with_metric(metric, options={})
+        try_update_status(options) do
+          statsd.time("packages-cc_updater_#{metric}-time.sparse-avg") do
+            yield
+          end
+        end
       end
 
       def try_update_status(ignore_errors: false)
