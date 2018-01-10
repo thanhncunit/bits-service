@@ -23,12 +23,24 @@ module BitsService
 
         begin
           if uploaded_filepath
-            try_update_status { cc_updater.processing_upload(guid) }
+            try_update_status do
+              statsd.time('packages-cc_updater_processing_upload-time.sparse-avg') do
+                cc_updater.processing_upload(guid)
+              end
+            end
             digests = create_from_upload(uploaded_filepath, guid)
-            try_update_status { cc_updater.ready(guid, digests) }
+            try_update_status do
+              statsd.time('packages-cc_updater_ready-time.sparse-avg') do
+                cc_updater.ready(guid, digests)
+              end
+            end
           elsif source_guid
             create_as_duplicate(source_guid, guid)
-            try_update_status { cc_updater.ready(guid) }
+            try_update_status do
+              statsd.time('packages-cc_updater_ready-time.sparse-avg') do
+                cc_updater.ready(guid)
+              end
+            end
           end
         rescue
           try_update_status(ignore_errors: true) { cc_updater.failed(guid, $ERROR_INFO.to_s) }
