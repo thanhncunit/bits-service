@@ -4,3 +4,4 @@
 .vscode
 api-doc/build
 ci/config.yml
+.DS_Store
