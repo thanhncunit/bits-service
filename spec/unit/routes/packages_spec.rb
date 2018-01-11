@@ -8,18 +8,33 @@ module BitsService
       let(:blobstore) { double(Blobstore::Client) }
       let(:headers) { {} }
       let(:cc_updater) { double(CCUpdater) }
+      let(:statsd_client) { double }
       let(:guid) { SecureRandom.uuid }
 
       before do
         allow_any_instance_of(Routes::Packages).to receive(:packages_blobstore).and_return(blobstore)
         allow_any_instance_of(Routes::Packages).to receive(:cc_updater).and_return(cc_updater)
 
+        allow_any_instance_of(Routes::Packages).to receive(:statsd).and_return(statsd_client)
+
+        allow(statsd_client).to receive(:time).with('packages-cp_to_blobstore-time.sparse-avg') do |*args, &block|
+          block.call
+        end
+
+        allow(statsd_client).to receive(:time).with('packages-cc_updater_ready-time.sparse-avg') do |*args, &block|
+          block.call
+        end
+
+        allow(statsd_client).to receive(:time).with('packages-cc_updater_processing_upload-time.sparse-avg') do |*args, &block|
+          block.call
+        end
+
         allow(cc_updater).to receive(:processing_upload)
         allow(cc_updater).to receive(:ready)
         allow(cc_updater).to receive(:failed)
       end
 
-      describe 'create a new package' do
+      describe 'creating a new package' do
         context 'from an uploaded file' do
           let(:zip_filepath) { '/path/to/zip/file' }
           let(:request_body) { { application: 'something' } }
@@ -42,6 +57,16 @@ module BitsService
 
           it 'returns HTTP status 201' do
             expect(response.status).to eq(201)
+          end
+
+          it 'emits elapsed time metric for processing_upload' do
+            expect(statsd_client).to receive(:time).with('packages-cc_updater_processing_upload-time.sparse-avg')
+            expect(response).to be # need to execute response in order to contact the server
+          end
+
+          it 'emits elapsed time metric for ready' do
+            expect(statsd_client).to receive(:time).with('packages-cc_updater_ready-time.sparse-avg')
+            expect(response).to be
           end
 
           it 'updates the Cloud Controller' do
@@ -189,6 +214,11 @@ module BitsService
 
           it 'returns HTTP status 201' do
             expect(response.status).to eq(201)
+          end
+
+          it 'emits elapsed time metric for ready' do
+            expect(statsd_client).to receive(:time).with('packages-cc_updater_ready-time.sparse-avg')
+            expect(response).to be
           end
 
           it 'updates the Cloud Controller' do
