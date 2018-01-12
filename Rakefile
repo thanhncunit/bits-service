@@ -20,7 +20,9 @@ namespace :spec do
   end
 end
 
-RuboCop::RakeTask.new
+RuboCop::RakeTask.new do |task|
+  task.options = ['--ignore-parent-exclusion']
+end
 
 namespace :docs do
   SOURCE_FILES = FileList['docs/*.txt']
