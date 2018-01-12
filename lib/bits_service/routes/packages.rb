@@ -17,7 +17,11 @@ module BitsService
         if uploaded_filepath.nil? && source_guid.nil?
           fail(ApiError.new_from_details('InvalidPackageSource').tap { |err|
             # CloudController allows to set package state to FAILED or READY directly from AWAITING_UPLOAD
-            try_update_status(ignore_errors: true) { cc_updater.failed(guid, err.to_s) }
+            try_update_status(ignore_errors: true) do
+              statsd.time('packages-cc_updater_failed-time.sparse-avg') do
+                cc_updater.failed(guid, err.to_s)
+              end
+            end
           })
         end
 
@@ -43,7 +47,11 @@ module BitsService
             end
           end
         rescue
-          try_update_status(ignore_errors: true) { cc_updater.failed(guid, $ERROR_INFO.to_s) }
+          try_update_status(ignore_errors: true) do
+            statsd.time('packages-cc_updater_failed-time.sparse-avg') do
+              cc_updater.failed(guid, $ERROR_INFO.to_s)
+            end
+          end
           raise
         end
       end

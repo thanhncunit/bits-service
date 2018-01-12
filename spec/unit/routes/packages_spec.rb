@@ -28,6 +28,10 @@ module BitsService
           block.call
         end
 
+        allow(statsd_client).to receive(:time).with('packages-cc_updater_failed-time.sparse-avg') do |*args, &block|
+          block.call
+        end
+
         allow(cc_updater).to receive(:processing_upload)
         allow(cc_updater).to receive(:ready)
         allow(cc_updater).to receive(:failed)
@@ -104,6 +108,11 @@ module BitsService
               expect(cc_updater).to receive(:processing_upload).with(guid)
               expect(cc_updater).to_not receive(:ready)
               expect(cc_updater).to receive(:failed).with(guid, 'The package upload is invalid: a file must be provided')
+              expect(response).to be
+            end
+
+            it 'emits elapsed time metric for failed' do
+              expect(statsd_client).to receive(:time).with('packages-cc_updater_failed-time.sparse-avg')
               expect(response).to be
             end
 
@@ -324,6 +333,11 @@ module BitsService
               expect(cc_updater).to_not receive(:processing_upload) # .with(guid)
               expect(cc_updater).to_not receive(:ready)
               expect(cc_updater).to receive(:failed).with(guid, start_with('Cannot create package'))
+              expect(response).to be
+            end
+
+            it 'emits elapsed time metric for failed' do
+              expect(statsd_client).to receive(:time).with('packages-cc_updater_failed-time.sparse-avg')
               expect(response).to be
             end
 
