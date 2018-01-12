@@ -12,10 +12,9 @@ module BitsService
       let(:guid) { SecureRandom.uuid }
 
       before do
-        allow_any_instance_of(Routes::Packages).to receive(:packages_blobstore).and_return(blobstore)
-        allow_any_instance_of(Routes::Packages).to receive(:cc_updater).and_return(cc_updater)
-
-        allow_any_instance_of(Routes::Packages).to receive(:statsd).and_return(statsd_client)
+        allow_any_instance_of(Packages).to receive(:packages_blobstore).and_return(blobstore)
+        allow_any_instance_of(Packages).to receive(:cc_updater).and_return(cc_updater)
+        allow_any_instance_of(Packages).to receive(:statsd).and_return(statsd_client)
 
         allow(statsd_client).to receive(:time).with('packages-cp_to_blobstore-time.sparse-avg') do |*args, &block|
           block.call
