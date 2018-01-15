@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-export IGNORE='(RSA PRIVATE KEY---|see below|c1oudc0w)'
+export IGNORE='(RSA PRIVATE KEY---|see below|c1oudc0w|skip-pw-check)'
 
 lpass ls Shared-Flintstone --format 'Shared-Flintstone/'"'"'%an'"'"'' --color=never | \
 xargs lpass show --color=never {} | \
