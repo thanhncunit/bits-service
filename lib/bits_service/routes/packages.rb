@@ -11,7 +11,8 @@ module BitsService
       include Helpers::CCUpdaterFactory
 
       put '/packages/:guid' do |guid|
-        uploaded_filepath = upload_params.upload_filepath('package')
+        uploaded_filepath = upload_params.upload_filepath('bits')
+        uploaded_filepath = upload_params.upload_filepath('package') unless uploaded_filepath
         source_guid = parsed_body['source_guid'] unless uploaded_filepath
 
         if uploaded_filepath.nil? && source_guid.nil?
@@ -33,6 +34,13 @@ module BitsService
           with_metric('failed', ignore_errors: true) { cc_updater.failed(guid, $ERROR_INFO.to_s) }
           raise
         end
+        content_type :json
+        {
+          guid: guid,
+          type: "bits",
+          state: "READY",
+          created_at: Time.now(),
+        }.to_json
       end
 
       get '/packages/:guid' do |guid|
