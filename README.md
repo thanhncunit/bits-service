@@ -1,6 +1,6 @@
 # Bits Service
+ <img src="docs/bits_logo_horizontal.svg" width="500" align="middle">
 
-![logo](docs/bits_logo_horizontal.svg)
 
 The bits-service is an extraction from existing functionality of the [cloud controller](https://github.com/cloudfoundry/cloud_controller_ng). It encapsulates all "bits operations" into its own, separately scalable service. All bits operations comprise buildpacks, droplets, app_stashes, packages and the buildpack_cache.
 
