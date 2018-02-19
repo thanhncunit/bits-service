@@ -99,7 +99,7 @@
       </span>
     </a>
     <div class="tocify-wrapper">
-      <img src="images/logo.png" alt="Logo" />
+      <img src="images/api_doc_logo.png" alt="Api doc logo" />
         <div class="lang-selector">
               <a href="#" data-language-name="curl">curl</a>
         </div>
@@ -233,6 +233,40 @@
 <h3 id="access">Access</h3>
 
 <p>Internal endpoint only</p>
+
+<h2 id="uploading-a-droplet-with-digest-in-header">Uploading a Droplet with Digest in Header</h2>
+
+<blockquote>
+<p>Example request:</p>
+</blockquote>
+<pre class="highlight shell"><code>curl --request PUT --header <span class="s1">'Digest: sha256=abcdefg'</span> --data-binary @droplet-file <span class="s1">'https://example.com/signed/droplets/4facf67a-2880-4367-928e-b4c88f63bcda?md5=tDTwS8DEdA0T-b0RRx_TIw&amp;expires=1510839810'</span>
+</code></pre>
+<blockquote>
+<p>Example response:</p>
+</blockquote>
+<pre class="highlight shell"><code>HTTP/1.1 201 Created
+</code></pre>
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">PUT /droplets/:guid</code></p>
+
+<p>where <code class="prettyprint">:guid</code> is the droplet&rsquo;s GUID.</p>
+
+<h3 id="request-headers">Request Headers</h3>
+
+<p><code class="prettyprint">Digest: sha256=abcdefg</code></p>
+
+<p>The format of the <code class="prettyprint">Digest</code> header&rsquo;s value is <code class="prettyprint">&lt;Algorithm&gt;=&lt;Value&gt;</code>. Currently only <code class="prettyprint">sha256</code> is supported.</p>
+
+<h3 id="request-body">Request Body</h3>
+
+<p><code class="prettyprint">content-of-droplet-file</code></p>
+
+<p>The body will always be treated as <code class="prettyprint">application/octet-stream</code>.</p>
+
+<h3 id="access">Access</h3>
+
+<p>This endpoint is public and can only be used with a signed URL.</p>
 
 <h2 id="downloading-a-droplet">Downloading a Droplet</h2>
 
