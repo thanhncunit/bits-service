@@ -15,7 +15,7 @@
 
 # Team Communication
 
-* [#flintstone](https://cloudfoundry.slack.com/messages/flintstone/)
+* [#bits-service](https://cloudfoundry.slack.com/messages/bits-service/)
 
 # BOSH
 
