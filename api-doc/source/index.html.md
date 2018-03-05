@@ -584,3 +584,21 @@ curl -X PUT 'https://internal.example.com/signed/packages/bdf47b84-1349-4abd-956
 <aside class="notice">
 Signing URL does not imply that the resource exists.
 </aside>
+
+# Metrics
+
+The bits-service emits the following metrics:
+
+## Copying bits to the blobstore
+
+* `app_stash-cp_r_to_blobstore-time.sparse-avg`
+* `packages-cp_to_blobstore-time.sparse-avg`
+* `buildpack-cp_to_blobstore-time.sparse-avg`
+* `droplet-cp_to_blobstore-time.sparse-avg`
+* `buildpack_cache-cp_to_blobstore-time.sparse-avg`
+
+## Updating the Cloud Controller
+
+* `packages-cc_updater_processing_upload-time.sparse-avg`
+* `packages-cc_updater_ready-time.sparse-avg`
+* `packages-cc_updater_failed-time.sparse-avg`
