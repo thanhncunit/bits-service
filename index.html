@@ -702,6 +702,28 @@ https://bits-service.example.com/signed/packages/test-package?md5<span class="o"
 Signing URL does not imply that the resource exists.
 </aside>
 
+<h1 id="metrics">Metrics</h1>
+
+<p>The bits-service emits the following metrics:</p>
+
+<h2 id="copying-bits-to-the-blobstore">Copying bits to the blobstore</h2>
+
+<ul>
+<li><code class="prettyprint">app_stash-cp_r_to_blobstore-time.sparse-avg</code></li>
+<li><code class="prettyprint">packages-cp_to_blobstore-time.sparse-avg</code></li>
+<li><code class="prettyprint">buildpack-cp_to_blobstore-time.sparse-avg</code></li>
+<li><code class="prettyprint">droplet-cp_to_blobstore-time.sparse-avg</code></li>
+<li><code class="prettyprint">buildpack_cache-cp_to_blobstore-time.sparse-avg</code></li>
+</ul>
+
+<h2 id="updating-the-cloud-controller">Updating the Cloud Controller</h2>
+
+<ul>
+<li><code class="prettyprint">packages-cc_updater_processing_upload-time.sparse-avg</code></li>
+<li><code class="prettyprint">packages-cc_updater_ready-time.sparse-avg</code></li>
+<li><code class="prettyprint">packages-cc_updater_failed-time.sparse-avg</code></li>
+</ul>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">
