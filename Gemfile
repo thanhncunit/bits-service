@@ -12,7 +12,7 @@ gem 'mime-types', '~> 2.6.2'
 gem 'puma'
 gem 'rake'
 gem 'rubyzip'
-gem 'sinatra', '~> 1.4'
+gem 'sinatra'
 gem 'statsd-ruby'
 gem 'steno'
 

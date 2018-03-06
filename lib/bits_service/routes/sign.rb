@@ -9,8 +9,8 @@ module BitsService
     class Sign < Base
       get('/sign/packages/:guid') { |guid| sign('packages', packages_blobstore, guid, params['verb']) }
       get('/sign/buildpacks/:guid') { |guid| sign('buildpacks', buildpack_blobstore, guid, params['verb']) }
-      get(%r{^/sign/buildpack_cache/entries/(.*/.*)}) { |path| sign('buildpack_cache/entries', buildpack_cache_blobstore, path, params['verb']) }
-      get(%r{^/sign/droplets/(.*/.*)}) { |path| sign('droplets', droplet_blobstore, path, params['verb']) }
+      get(%r{/sign/buildpack_cache/entries/(.*/.*)}) { |path| sign('buildpack_cache/entries', buildpack_cache_blobstore, path, params['verb']) }
+      get(%r{/sign/droplets/(.*/.*)}) { |path| sign('droplets', droplet_blobstore, path, params['verb']) }
       get('/sign/droplets/:guid') { |guid| sign_local("droplets/#{guid}") }
 
       private
