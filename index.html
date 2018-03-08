@@ -706,6 +706,28 @@ Signing URL does not imply that the resource exists.
 
 <p>The bits-service emits the following metrics:</p>
 
+<h2 id="response-times">Response times</h2>
+
+<p>These are of the form <code class="prettyprint">&lt;request-method&gt;-&lt;resource-type&gt;-time.sparse-avg</code>, e.g.:</p>
+
+<ul>
+<li><code class="prettyprint">PUT-packages-time.sparse-avg</code></li>
+<li><code class="prettyprint">DELETE-droplets-time.sparse-avg</code></li>
+<li><code class="prettyprint">POST-app_stash-time.sparse-avg</code></li>
+</ul>
+
+<h2 id="response-sizes">Response sizes</h2>
+
+<p>Similar to response times, these are of the form <code class="prettyprint">&lt;request-method&gt;-&lt;resource-type&gt;-size</code>, e.g.:</p>
+
+<ul>
+<li><code class="prettyprint">GET-buildpacks-size</code></li>
+<li><code class="prettyprint">DELETE-droplets-size</code></li>
+<li><code class="prettyprint">POST-app_stash-size</code></li>
+</ul>
+
+<p>While they are available for all requests, these are most interesting for <code class="prettyprint">GET</code> requests.</p>
+
 <h2 id="copying-bits-to-the-blobstore">Copying bits to the blobstore</h2>
 
 <ul>
