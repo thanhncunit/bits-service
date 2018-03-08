@@ -38,29 +38,9 @@ module BitsService
         {
           guid: guid,
           type: "bits",
-          data: {
-            checksum: {
-              type: "sha256",
-            },
-          },
           state: "READY",
-          created_at: "2015-11-13T17:02:56Z",
-          updated_at: "2016-06-08T16:41:26Z",
-          links: {
-            self: {
-              href: "https://api.v3-push-bosh-lite.freeddns.org/v3/packages/#{guid}"
-            },
-            upload: {
-              href: "https://api.example.org/v3/packages/44f7c078-0934-470f-9883-4fcddc5b8f13/upload",
-              method: "POST"
-            },
-            download: {
-              href: "https://api.v3-push-bosh-lite.freeddns.org/v3/packages/#{guid}/download",
-              method: "GET"
-            },
-          }
+          created_at: Time.now(),
         }.to_json
-
       end
 
       get '/packages/:guid' do |guid|
