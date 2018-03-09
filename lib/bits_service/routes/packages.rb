@@ -10,9 +10,10 @@ module BitsService
       include Errors
       include Helpers::CCUpdaterFactory
 
+      # rubocop:disable Metrics/BlockLength: Block has too many lines.
       put '/packages/:guid' do |guid|
         uploaded_filepath = upload_params.upload_filepath('bits')
-        uploaded_filepath = upload_params.upload_filepath('package') unless uploaded_filepath
+        uploaded_filepath ||= upload_params.upload_filepath('package')
         source_guid = parsed_body['source_guid'] unless uploaded_filepath
 
         if uploaded_filepath.nil? && source_guid.nil?
@@ -37,11 +38,12 @@ module BitsService
         content_type :json
         {
           guid: guid,
-          type: "bits",
-          state: "READY",
-          created_at: Time.now(),
+          type: 'bits',
+          state: 'READY',
+          created_at: Time.now,
         }.to_json
       end
+      # rubocop:enable Metrics/BlockLength: Block has too many lines.
 
       get '/packages/:guid' do |guid|
         blob = packages_blobstore.blob(guid)
