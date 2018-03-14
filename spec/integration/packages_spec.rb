@@ -231,8 +231,11 @@ describe 'packages resource', type: :integration do
     end
 
     around(:example) do |example|
+      listening = Socket.tcp('localhost', port, connect_timeout: 1) { true } rescue false
+      expect(listening).to be_falsey
+
       StubServer.open('9123', replies, ssl: ssl, webrick: webrick_additional_config) do |server|
-        2.times { server.wait } # Intentionally wait twice to give stub-server enough time to come up before running the example.
+        server.wait
         example.run
       end
     end
