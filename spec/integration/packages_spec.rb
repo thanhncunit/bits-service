@@ -16,6 +16,10 @@ describe 'packages resource', type: :integration do
   let(:resource_path) { "/packages/#{guid}" }
   let(:guid) { SecureRandom.uuid }
 
+  def port
+    9323
+  end
+
   context 'without CC update config' do
     before(:all) do
       @root_dir = Dir.mktmpdir
@@ -183,7 +187,7 @@ describe 'packages resource', type: :integration do
           use_nginx: false
         },
         cc_updates: {
-          cc_url: 'https://localhost:9123',
+          cc_url: "https://localhost:#{port}",
           ca_cert: File.expand_path('../../certificates/ca.crt', __FILE__),
           client_cert: File.expand_path('../../certificates/bits-service.crt', __FILE__),
           client_key: File.expand_path('../../certificates/bits-service.key', __FILE__)
@@ -234,7 +238,7 @@ describe 'packages resource', type: :integration do
       listening = Socket.tcp('localhost', port, connect_timeout: 1) { true } rescue false
       expect(listening).to be_falsey
 
-      StubServer.open('9123', replies, ssl: ssl, webrick: webrick_additional_config) do |server|
+      StubServer.open(port, replies, ssl: ssl, webrick: webrick_additional_config) do |server|
         server.wait
         example.run
       end

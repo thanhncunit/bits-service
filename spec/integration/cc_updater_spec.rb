@@ -18,7 +18,7 @@ module BitsService
     include Helpers::MTLSHelper
 
     subject { CCUpdater.new("https://localhost:#{port}", mtls_client) }
-    let(:port) { 9123 }
+    let(:port) { 9223 }
     let(:guid) { SecureRandom.uuid }
 
     let(:ssl) do
