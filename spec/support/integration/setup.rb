@@ -29,8 +29,10 @@ module IntegrationSetupHelpers
     project_path = File.join(File.dirname(__FILE__), '../../..')
     spawn_opts = {
       chdir: project_path,
-      out: '/dev/null',
-      err: '/dev/null',
+      # out: '/dev/null',
+      # err: '/dev/null',
+      out: '/tmp/stub_server.out.log',
+      err: '/tmp/stub_server.err.log',
       pgroup: true,
     }
 

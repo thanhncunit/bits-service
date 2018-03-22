@@ -64,8 +64,8 @@ describe 'app_stash endpoint', type: :integration do
       expect(json).to_not be_empty
       expect(json.size).to eq(2)
 
-      expect(json).to include({ 'fn' => 'app/app.rb', 'sha1' => app_rb_sha, 'mode' => app_rb_file_mode })
-      expect(json).to include({ 'fn' => 'app/lib.rb', 'sha1' => lib_rb_sha, 'mode' => lib_rb_file_mode })
+      expect(json).to include({ 'fn' => 'app/app.rb', 'sha1' => app_rb_sha, 'mode' => app_rb_file_mode, 'size' => 53 })
+      expect(json).to include({ 'fn' => 'app/lib.rb', 'sha1' => lib_rb_sha, 'mode' => lib_rb_file_mode, 'size' => 36 })
     end
 
     context 'when the file is not a valid zip' do

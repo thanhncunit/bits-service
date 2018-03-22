@@ -13,8 +13,7 @@ module BitsService
         unless uploaded_filepath
           fail Errors::ApiError.new_from_details(
             'AppBitsUploadInvalid',
-            'missing key `application`'
-)
+            'missing key `application`')
         end
 
         destination_path = Dir.mktmpdir('app_stash')
@@ -25,6 +24,11 @@ module BitsService
             app_stash_blobstore.cp_r_to_blobstore(destination_path)
           end
           receipt = Receipt.new(destination_path)
+# SPIKE
+# request: ZIP file extracted into destination_path
+# response: SHAs of files in ZIP
+# Note that the sizes were missing, I added them to the receipt
+File.write('/tmp/receipt.json', JSON.generate(receipt.contents))
 
           json 201, receipt.contents
         rescue Errno::ENOSPC
@@ -38,6 +42,13 @@ module BitsService
         response_payload = request_payload.select do |resource|
           valid_sha?(resource['sha1']) && app_stash_blobstore.exists?(resource['sha1'])
         end
+# SPIKE
+
+# request_payload: SHAs of _all_ files of the app
+# Example:
+
+# response_payload: SHAs of files found in blobstore
+# Example:
 
         json 200, response_payload
       end

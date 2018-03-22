@@ -26,6 +26,8 @@ RSpec.configure do |conf|
 
   conf.include ConfigFileHelpers
   conf.include FileHelpers
+  conf.filter_run :focus
+  conf.run_all_when_everything_filtered = true
 
   conf.before :each do
     Fog::Mock.reset
