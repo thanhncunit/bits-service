@@ -8,19 +8,28 @@ module BitsService
     class AppStash < Base
       DEFAULT_FILE_MODE = 0o744
 
+      post '/app_stash/matches' do
+        response_payload = request_payload.select do |resource|
+          valid_sha?(resource['sha1']) && app_stash_blobstore.exists?(resource['sha1'])
+        end
+
+        json 200, response_payload
+      end
+
       post '/app_stash/entries' do
         uploaded_filepath = upload_params.upload_filepath('application')
         unless uploaded_filepath
           fail Errors::ApiError.new_from_details(
             'AppBitsUploadInvalid',
             'missing key `application`'
-)
+          )
         end
 
         destination_path = Dir.mktmpdir('app_stash')
 
         begin
           AppPackager.unzip(uploaded_filepath, destination_path)
+          remove_symlinks(destination_path)
           statsd.time 'app_stash-cp_r_to_blobstore-time.sparse-avg' do
             app_stash_blobstore.cp_r_to_blobstore(destination_path)
           end
@@ -32,14 +41,6 @@ module BitsService
         ensure
           FileUtils.rm_r(destination_path)
         end
-      end
-
-      post '/app_stash/matches' do
-        response_payload = request_payload.select do |resource|
-          valid_sha?(resource['sha1']) && app_stash_blobstore.exists?(resource['sha1'])
-        end
-
-        json 200, response_payload
       end
 
       post '/app_stash/bundles' do
@@ -69,6 +70,12 @@ module BitsService
       end
 
       private
+
+      def remove_symlinks(app_contents_path)
+        Find.find(app_contents_path) do |path|
+          File.delete(path) if File.symlink?(path)
+        end
+      end
 
       def parse_mode!(raw_mode)
         (raw_mode ? raw_mode.to_i(8) : DEFAULT_FILE_MODE).tap do |mode|

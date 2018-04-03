@@ -11,14 +11,12 @@ module BitsService
     end
 
     describe 'POST /app_stash/entries' do
-      let(:tmp_dir) { '/path/to/tmp/dir' }
       let(:zip_filepath) { '/path/to/zip/file' }
       let(:request_body) { { application: 'something' } }
       let(:receipt_contents) { [{ 'fn' => 'foo', 'sha1' => '1234', 'mode' => '766' }] }
 
       before do
         allow_any_instance_of(Helpers::Upload::Params).to receive(:upload_filepath).and_return(zip_filepath)
-        allow(Dir).to receive(:mktmpdir).and_return(tmp_dir)
         allow(AppPackager).to receive(:unzip)
         allow(blobstore).to receive(:cp_r_to_blobstore)
         allow(FileUtils).to receive(:rm_r)
@@ -40,18 +38,9 @@ module BitsService
         expect(json).to eq(receipt_contents)
       end
 
-      it 'unzips the uploaded zip file' do
-        expect(AppPackager).to receive(:unzip).with(zip_filepath, tmp_dir)
-        post '/app_stash/entries', request_body, headers
-      end
-
-      it 'uploads the unzipped app files to the blobstore' do
-        expect(blobstore).to receive(:cp_r_to_blobstore).with(tmp_dir)
-        post '/app_stash/entries', request_body, headers
-      end
-
       it 'removes the temporary folder' do
-        expect(FileUtils).to receive(:rm_r).with(tmp_dir)
+        allow(Dir).to receive(:mktmpdir).and_return('/path/to/tmp/dir')
+        expect(FileUtils).to receive(:rm_r).with('/path/to/tmp/dir')
         post '/app_stash/entries', request_body, headers
       end
 
@@ -96,7 +85,8 @@ module BitsService
         end
 
         it 'removes the temporary folder' do
-          expect(FileUtils).to receive(:rm_r).with(tmp_dir)
+          allow(Dir).to receive(:mktmpdir).and_return('/path/to/tmp/dir')
+          expect(FileUtils).to receive(:rm_r).with('/path/to/tmp/dir')
           post '/app_stash/entries', request_body, headers
         end
       end
@@ -112,7 +102,8 @@ module BitsService
         end
 
         it 'removes the temporary folder' do
-          expect(FileUtils).to receive(:rm_r).with(tmp_dir)
+          allow(Dir).to receive(:mktmpdir).and_return('/path/to/tmp/dir')
+          expect(FileUtils).to receive(:rm_r).with('/path/to/tmp/dir')
           post '/app_stash/entries', request_body, headers
         end
       end
@@ -142,7 +133,8 @@ module BitsService
         end
 
         it 'removes the temporary folder' do
-          expect(FileUtils).to receive(:rm_r).with(tmp_dir)
+          allow(Dir).to receive(:mktmpdir).and_return('/path/to/tmp/dir')
+          expect(FileUtils).to receive(:rm_r).with('/path/to/tmp/dir')
           post '/app_stash/entries', request_body, headers
         end
       end
