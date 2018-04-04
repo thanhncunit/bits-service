@@ -17,7 +17,7 @@ describe 'packages resource', type: :integration do
   let(:guid) { SecureRandom.uuid }
 
   def port
-    9323
+    rand((40000..50000)) # choosing a random port between 40000 and 50000, because it's unlikely that these are already used.
   end
 
   context 'without CC update config' do

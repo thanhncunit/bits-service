@@ -6,7 +6,7 @@ require 'open-uri'
 
 module BitsService
   describe 'Stub Server', type: :integration do
-    let(:port) { 9123 }
+    let(:port) { rand((40000..50000)) } # choosing a random port between 40000 and 50000, because it's unlikely that these are already used.
 
     # For full verification, we would need a little more than stub_server is able to do; especially SSLCACertificateFile.
     # See http://ben.vandgrift.com/2011/06/17/secure_communication_rails_3.html
