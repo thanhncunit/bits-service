@@ -16,9 +16,7 @@ describe 'packages resource', type: :integration do
   let(:resource_path) { "/packages/#{guid}" }
   let(:guid) { SecureRandom.uuid }
 
-  def port
-    rand((40000..50000)) # choosing a random port between 40000 and 50000, because it's unlikely that these are already used.
-  end
+  let(:port) { rand((40000..50000)) } # choosing a random port between 40000 and 50000, because it's unlikely that these are already used.
 
   context 'without CC update config' do
     before(:all) do
@@ -172,10 +170,8 @@ describe 'packages resource', type: :integration do
   end
 
   context 'with CC update config' do
-    before(:all) do
+    before(:each) do
       @root_dir = Dir.mktmpdir
-
-      @cc_port = port
 
       config = {
         packages: {
@@ -189,7 +185,7 @@ describe 'packages resource', type: :integration do
           use_nginx: false
         },
         cc_updates: {
-          cc_url: "https://localhost:#{@cc_port}",
+          cc_url: "https://localhost:#{port}",
           ca_cert: File.expand_path('../../certificates/ca.crt', __FILE__),
           client_cert: File.expand_path('../../certificates/bits-service.crt', __FILE__),
           client_key: File.expand_path('../../certificates/bits-service.key', __FILE__)
@@ -199,7 +195,7 @@ describe 'packages resource', type: :integration do
       start_server(config)
     end
 
-    after(:all) do
+    after(:each) do
       stop_server
       FileUtils.rm_rf(@root_dir)
     end
@@ -225,11 +221,11 @@ describe 'packages resource', type: :integration do
     end
 
     around(:example) do |example|
-      listening = Socket.tcp('localhost', @cc_port, connect_timeout: 1) { true } rescue false
+      listening = Socket.tcp('localhost', port, connect_timeout: 1) { true } rescue false
       expect(listening).to be_falsey
 
       StubServer.open(
-        @cc_port,
+        port,
         {
           "/packages/#{guid}" => [status_code, {}, []],
           '/packages/dummy-source-guid' => [204, {}, []],
