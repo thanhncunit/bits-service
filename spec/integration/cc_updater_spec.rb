@@ -18,7 +18,7 @@ module BitsService
     include Helpers::MTLSHelper
 
     subject { CCUpdater.new("https://localhost:#{port}", mtls_client) }
-    let(:port) { 9223 }
+    let(:port) { rand((40000..50000)) } # choosing a random port between 40000 and 50000, because it's unlikely that these are already used.
     let(:guid) { SecureRandom.uuid }
 
     let(:ssl) do
