@@ -175,6 +175,8 @@ describe 'packages resource', type: :integration do
     before(:all) do
       @root_dir = Dir.mktmpdir
 
+      @cc_port = port
+
       config = {
         packages: {
           directory_key: 'packages',
@@ -187,7 +189,7 @@ describe 'packages resource', type: :integration do
           use_nginx: false
         },
         cc_updates: {
-          cc_url: "https://localhost:#{port}",
+          cc_url: "https://localhost:#{@cc_port}",
           ca_cert: File.expand_path('../../certificates/ca.crt', __FILE__),
           client_cert: File.expand_path('../../certificates/bits-service.crt', __FILE__),
           client_key: File.expand_path('../../certificates/bits-service.key', __FILE__)
@@ -214,20 +216,8 @@ describe 'packages resource', type: :integration do
       }
     end
 
-    let(:webrick_additional_config) do
-      {
-        SSLVerifyClient: OpenSSL::SSL::VERIFY_PEER | OpenSSL::SSL::VERIFY_FAIL_IF_NO_PEER_CERT,
-        SSLCACertificateFile: 'spec/certificates/ca.crt',
-      }
-    end
-
     let(:status_code) { 204 }
-    let(:replies) do
-      {
-        "/packages/#{guid}" => [status_code, {}, []],
-        '/packages/dummy-source-guid' => [204, {}, []],
-      }
-    end
+
     let(:source_guid) do
       'dummy-source-guid'.tap do |guid|
         make_put_request("/packages/#{guid}", upload_body)
@@ -235,10 +225,21 @@ describe 'packages resource', type: :integration do
     end
 
     around(:example) do |example|
-      listening = Socket.tcp('localhost', port, connect_timeout: 1) { true } rescue false
+      listening = Socket.tcp('localhost', @cc_port, connect_timeout: 1) { true } rescue false
       expect(listening).to be_falsey
 
-      StubServer.open(port, replies, ssl: ssl, webrick: webrick_additional_config) do |server|
+      StubServer.open(
+        @cc_port,
+        {
+          "/packages/#{guid}" => [status_code, {}, []],
+          '/packages/dummy-source-guid' => [204, {}, []],
+        },
+        ssl: ssl,
+        webrick: {
+          SSLVerifyClient: OpenSSL::SSL::VERIFY_PEER | OpenSSL::SSL::VERIFY_FAIL_IF_NO_PEER_CERT,
+          SSLCACertificateFile: 'spec/certificates/ca.crt',
+        }) do |server|
+
         server.wait
         example.run
       end
