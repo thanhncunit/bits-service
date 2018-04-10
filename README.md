@@ -6,7 +6,7 @@ The bits-service is an extraction from existing functionality of the [cloud cont
 
 [The API](http://cloudfoundry-incubator.github.io/bits-service/) is a work in progress and will most likely change.
 
-## Supported Backends:
+## Supported Backends
 
 Bits currently supports [WebDAV](https://en.wikipedia.org/wiki/WebDAV) and the following [Fog](http://fog.io/) connectors:
 
