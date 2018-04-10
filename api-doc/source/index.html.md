@@ -11,6 +11,15 @@ search: true
 
 The bits-service is an extraction from existing functionality of the [cloud controller](https://github.com/cloudfoundry/cloud_controller_ng). It encapsulates all "bits operations" into its own, separately scalable service. All bits operations comprise buildpacks, droplets, app_stashes, packages and the buildpack_cache.
 
+### Supported Backends
+Bits currently supports [WebDAV](https://en.wikipedia.org/wiki/WebDAV) and the following [Fog](http://fog.io/) connectors:
+
+* AWS S3
+* Azure
+* Google
+* Local (NFS)
+* Openstack
+
 # Packages
 
 A package are the files that make up an application from the developer's point of view (source code).

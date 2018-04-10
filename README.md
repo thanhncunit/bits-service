@@ -8,9 +8,14 @@ The bits-service is an extraction from existing functionality of the [cloud cont
 
 ## Supported Backends:
 
-* S3
-* Local filesystem
-* WebDAV
+Bits currently supports [WebDAV](https://en.wikipedia.org/wiki/WebDAV) and the following [Fog](http://fog.io/) connectors:
+
+* AWS S3
+* Azure
+* Google
+* Local (NFS)
+* Openstack
+
 
 # Development
 
