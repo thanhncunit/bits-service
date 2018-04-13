@@ -30,7 +30,7 @@ module BitsService
         begin
           AppPackager.unzip(uploaded_filepath, destination_path)
           remove_symlinks(destination_path)
-          statsd.time 'app_stash-cp_r_to_blobstore-time.sparse-avg' do
+          statsd.time 'bits.app_stash-cp_r_to_blobstore-time.sparse-avg' do
             app_stash_blobstore.cp_r_to_blobstore(destination_path)
           end
           receipt = Receipt.new(destination_path)

@@ -10,7 +10,7 @@ module BitsService
           uploaded_filepath = upload_params.upload_filepath('buildpack_cache')
           fail Errors::ApiError.new_from_details('BuildpackCacheBitsUploadInvalid', 'a file must be provided') if uploaded_filepath.to_s == ''
 
-          statsd.time 'buildpack_cache-cp_to_blobstore-time.sparse-avg' do
+          statsd.time 'bits.buildpack_cache-cp_to_blobstore-time.sparse-avg' do
             buildpack_cache_blobstore.cp_to_blobstore(uploaded_filepath, key(app_guid, stack_name))
           end
 

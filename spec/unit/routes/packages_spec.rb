@@ -16,19 +16,19 @@ module BitsService
         allow_any_instance_of(Packages).to receive(:cc_updater).and_return(cc_updater)
         allow_any_instance_of(Packages).to receive(:statsd).and_return(statsd_client)
 
-        allow(statsd_client).to receive(:time).with('packages-cp_to_blobstore-time.sparse-avg') do |*args, &block|
+        allow(statsd_client).to receive(:time).with('bits.packages-cp_to_blobstore-time.sparse-avg') do |*args, &block|
           block.call
         end
 
-        allow(statsd_client).to receive(:time).with('packages-cc_updater_ready-time.sparse-avg') do |*args, &block|
+        allow(statsd_client).to receive(:time).with('bits.packages-cc_updater_ready-time.sparse-avg') do |*args, &block|
           block.call
         end
 
-        allow(statsd_client).to receive(:time).with('packages-cc_updater_processing_upload-time.sparse-avg') do |*args, &block|
+        allow(statsd_client).to receive(:time).with('bits.packages-cc_updater_processing_upload-time.sparse-avg') do |*args, &block|
           block.call
         end
 
-        allow(statsd_client).to receive(:time).with('packages-cc_updater_failed-time.sparse-avg') do |*args, &block|
+        allow(statsd_client).to receive(:time).with('bits.packages-cc_updater_failed-time.sparse-avg') do |*args, &block|
           block.call
         end
 
@@ -63,12 +63,12 @@ module BitsService
           end
 
           it 'emits elapsed time metric for processing_upload' do
-            expect(statsd_client).to receive(:time).with('packages-cc_updater_processing_upload-time.sparse-avg')
+            expect(statsd_client).to receive(:time).with('bits.packages-cc_updater_processing_upload-time.sparse-avg')
             expect(response).to be # need to execute response in order to contact the server
           end
 
           it 'emits elapsed time metric for ready' do
-            expect(statsd_client).to receive(:time).with('packages-cc_updater_ready-time.sparse-avg')
+            expect(statsd_client).to receive(:time).with('bits.packages-cc_updater_ready-time.sparse-avg')
             expect(response).to be
           end
 
@@ -112,7 +112,7 @@ module BitsService
             end
 
             it 'emits elapsed time metric for failed' do
-              expect(statsd_client).to receive(:time).with('packages-cc_updater_failed-time.sparse-avg')
+              expect(statsd_client).to receive(:time).with('bits.packages-cc_updater_failed-time.sparse-avg')
               expect(response).to be
             end
 
@@ -225,7 +225,7 @@ module BitsService
           end
 
           it 'emits elapsed time metric for ready' do
-            expect(statsd_client).to receive(:time).with('packages-cc_updater_ready-time.sparse-avg')
+            expect(statsd_client).to receive(:time).with('bits.packages-cc_updater_ready-time.sparse-avg')
             expect(response).to be
           end
 
@@ -337,7 +337,7 @@ module BitsService
             end
 
             it 'emits elapsed time metric for failed' do
-              expect(statsd_client).to receive(:time).with('packages-cc_updater_failed-time.sparse-avg')
+              expect(statsd_client).to receive(:time).with('bits.packages-cc_updater_failed-time.sparse-avg')
               expect(response).to be
             end
 

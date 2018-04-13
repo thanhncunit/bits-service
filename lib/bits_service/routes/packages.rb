@@ -71,7 +71,7 @@ module BitsService
       def create_from_upload(uploaded_filepath, target_guid)
         fail ApiError.new_from_details('PackageUploadInvalid', 'a file must be provided') if uploaded_filepath.to_s.empty?
 
-        statsd.time 'packages-cp_to_blobstore-time.sparse-avg' do
+        statsd.time 'bits.packages-cp_to_blobstore-time.sparse-avg' do
           packages_blobstore.cp_to_blobstore(uploaded_filepath, target_guid)
         end
 
@@ -115,7 +115,7 @@ module BitsService
 
       def with_metric(metric, options={})
         try_update_status(options) do
-          statsd.time("packages-cc_updater_#{metric}-time.sparse-avg") do
+          statsd.time("bits.packages-cc_updater_#{metric}-time.sparse-avg") do
             yield
           end
         end
