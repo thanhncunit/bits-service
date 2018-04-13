@@ -723,9 +723,9 @@ Signing URL does not imply that the resource exists.
 <p>These are of the form <code class="prettyprint">&lt;request-method&gt;-&lt;resource-type&gt;-time.sparse-avg</code>, e.g.:</p>
 
 <ul>
-<li><code class="prettyprint">PUT-packages-time.sparse-avg</code></li>
-<li><code class="prettyprint">DELETE-droplets-time.sparse-avg</code></li>
-<li><code class="prettyprint">POST-app_stash-time.sparse-avg</code></li>
+<li><code class="prettyprint">bits.PUT-packages-time.sparse-avg</code></li>
+<li><code class="prettyprint">bits.DELETE-droplets-time.sparse-avg</code></li>
+<li><code class="prettyprint">bits.POST-app_stash-time.sparse-avg</code></li>
 </ul>
 
 <h2 id="response-sizes">Response sizes</h2>
@@ -733,9 +733,9 @@ Signing URL does not imply that the resource exists.
 <p>Similar to response times, these are of the form <code class="prettyprint">&lt;request-method&gt;-&lt;resource-type&gt;-size</code>, e.g.:</p>
 
 <ul>
-<li><code class="prettyprint">GET-buildpacks-size</code></li>
-<li><code class="prettyprint">DELETE-droplets-size</code></li>
-<li><code class="prettyprint">POST-app_stash-size</code></li>
+<li><code class="prettyprint">bits.GET-buildpacks-size</code></li>
+<li><code class="prettyprint">bits.DELETE-droplets-size</code></li>
+<li><code class="prettyprint">bits.POST-app_stash-size</code></li>
 </ul>
 
 <p>While they are available for all requests, these are most interesting for <code class="prettyprint">GET</code> requests.</p>
@@ -743,19 +743,19 @@ Signing URL does not imply that the resource exists.
 <h2 id="copying-bits-to-the-blobstore">Copying bits to the blobstore</h2>
 
 <ul>
-<li><code class="prettyprint">app_stash-cp_r_to_blobstore-time.sparse-avg</code></li>
-<li><code class="prettyprint">packages-cp_to_blobstore-time.sparse-avg</code></li>
-<li><code class="prettyprint">buildpack-cp_to_blobstore-time.sparse-avg</code></li>
-<li><code class="prettyprint">droplet-cp_to_blobstore-time.sparse-avg</code></li>
-<li><code class="prettyprint">buildpack_cache-cp_to_blobstore-time.sparse-avg</code></li>
+<li><code class="prettyprint">bits.app_stash-cp_r_to_blobstore-time.sparse-avg</code></li>
+<li><code class="prettyprint">bits.packages-cp_to_blobstore-time.sparse-avg</code></li>
+<li><code class="prettyprint">bits.buildpack-cp_to_blobstore-time.sparse-avg</code></li>
+<li><code class="prettyprint">bits.droplet-cp_to_blobstore-time.sparse-avg</code></li>
+<li><code class="prettyprint">bits.buildpack_cache-cp_to_blobstore-time.sparse-avg</code></li>
 </ul>
 
 <h2 id="updating-the-cloud-controller">Updating the Cloud Controller</h2>
 
 <ul>
-<li><code class="prettyprint">packages-cc_updater_processing_upload-time.sparse-avg</code></li>
-<li><code class="prettyprint">packages-cc_updater_ready-time.sparse-avg</code></li>
-<li><code class="prettyprint">packages-cc_updater_failed-time.sparse-avg</code></li>
+<li><code class="prettyprint">bits.packages-cc_updater_processing_upload-time.sparse-avg</code></li>
+<li><code class="prettyprint">bits.packages-cc_updater_ready-time.sparse-avg</code></li>
+<li><code class="prettyprint">bits.packages-cc_updater_failed-time.sparse-avg</code></li>
 </ul>
 
       </div>
