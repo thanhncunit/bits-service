@@ -600,21 +600,47 @@ The bits-service emits the following metrics:
 
 ## Response times
 
-These are of the form `<request-method>-<resource-type>-time`, e.g.:
+### Status code agnostic
+
+These are of the form `bits.<request-method>-<resource-type>-time`, e.g.:
 
 * `bits.PUT-packages-time`
 * `bits.DELETE-droplets-time`
 * `bits.POST-app_stash-time`
 
+### By status code
+
+These are of the form `bits.<request-method>-<resource-type>-<status-code>-time`, e.g.:
+
+* `bits.PUT-packages-403-time`
+* `bits.DELETE-droplets-200-time`
+* `bits.POST-app_stash-500-time`
+
 ## Response sizes
 
-Similar to response times, these are of the form `<request-method>-<resource-type>-size`, e.g.:
+Similar to response times, these are of the form `bits.<request-method>-<resource-type>-size`, e.g.:
 
 * `bits.GET-buildpacks-size`
 * `bits.DELETE-droplets-size`
 * `bits.POST-app_stash-size`
 
 While they are available for all requests, these are most interesting for `GET` requests.
+## Request sizes
+
+Similar to response times, these are of the form `bits.<request-method>-<resource-type>-request-size`, e.g.:
+
+* `bits.GET-buildpacks-request-size`
+* `bits.DELETE-droplets-request-size`
+* `bits.POST-app_stash-request-size`
+
+While they are available for all requests, these are most interesting for `PUT`/`POST` requests.
+
+## Request status codes
+
+These are of the form `bits.status-<status-code>`, e.g.:
+
+* `bits.status-404`
+* `bits.status-200`
 
 ## Copying bits to the blobstore
 
