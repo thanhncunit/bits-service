@@ -600,11 +600,11 @@ The bits-service emits the following metrics:
 
 ## Response times
 
-These are of the form `<request-method>-<resource-type>-time.sparse-avg`, e.g.:
+These are of the form `<request-method>-<resource-type>-time`, e.g.:
 
-* `bits.PUT-packages-time.sparse-avg`
-* `bits.DELETE-droplets-time.sparse-avg`
-* `bits.POST-app_stash-time.sparse-avg`
+* `bits.PUT-packages-time`
+* `bits.DELETE-droplets-time`
+* `bits.POST-app_stash-time`
 
 ## Response sizes
 
@@ -618,14 +618,14 @@ While they are available for all requests, these are most interesting for `GET` 
 
 ## Copying bits to the blobstore
 
-* `bits.app_stash-cp_r_to_blobstore-time.sparse-avg`
-* `bits.packages-cp_to_blobstore-time.sparse-avg`
-* `bits.buildpack-cp_to_blobstore-time.sparse-avg`
-* `bits.droplet-cp_to_blobstore-time.sparse-avg`
-* `bits.buildpack_cache-cp_to_blobstore-time.sparse-avg`
+* `bits.app_stash-cp_r_to_blobstore-time`
+* `bits.packages-cp_to_blobstore-time`
+* `bits.buildpack-cp_to_blobstore-time`
+* `bits.droplet-cp_to_blobstore-time`
+* `bits.buildpack_cache-cp_to_blobstore-time`
 
 ## Updating the Cloud Controller
 
-* `bits.packages-cc_updater_processing_upload-time.sparse-avg`
-* `bits.packages-cc_updater_ready-time.sparse-avg`
-* `bits.packages-cc_updater_failed-time.sparse-avg`
+* `bits.packages-cc_updater_processing_upload-time`
+* `bits.packages-cc_updater_ready-time`
+* `bits.packages-cc_updater_failed-time`
