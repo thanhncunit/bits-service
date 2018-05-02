@@ -720,17 +720,29 @@ Signing URL does not imply that the resource exists.
 
 <h2 id="response-times">Response times</h2>
 
-<p>These are of the form <code class="prettyprint">&lt;request-method&gt;-&lt;resource-type&gt;-time.sparse-avg</code>, e.g.:</p>
+<h3 id="status-code-agnostic">Status code agnostic</h3>
+
+<p>These are of the form <code class="prettyprint">bits.&lt;request-method&gt;-&lt;resource-type&gt;-time</code>, e.g.:</p>
 
 <ul>
-<li><code class="prettyprint">bits.PUT-packages-time.sparse-avg</code></li>
-<li><code class="prettyprint">bits.DELETE-droplets-time.sparse-avg</code></li>
-<li><code class="prettyprint">bits.POST-app_stash-time.sparse-avg</code></li>
+<li><code class="prettyprint">bits.PUT-packages-time</code></li>
+<li><code class="prettyprint">bits.DELETE-droplets-time</code></li>
+<li><code class="prettyprint">bits.POST-app_stash-time</code></li>
+</ul>
+
+<h3 id="by-status-code">By status code</h3>
+
+<p>These are of the form <code class="prettyprint">bits.&lt;request-method&gt;-&lt;resource-type&gt;-&lt;status-code&gt;-time</code>, e.g.:</p>
+
+<ul>
+<li><code class="prettyprint">bits.PUT-packages-403-time</code></li>
+<li><code class="prettyprint">bits.DELETE-droplets-200-time</code></li>
+<li><code class="prettyprint">bits.POST-app_stash-500-time</code></li>
 </ul>
 
 <h2 id="response-sizes">Response sizes</h2>
 
-<p>Similar to response times, these are of the form <code class="prettyprint">&lt;request-method&gt;-&lt;resource-type&gt;-size</code>, e.g.:</p>
+<p>Similar to response times, these are of the form <code class="prettyprint">bits.&lt;request-method&gt;-&lt;resource-type&gt;-size</code>, e.g.:</p>
 
 <ul>
 <li><code class="prettyprint">bits.GET-buildpacks-size</code></li>
@@ -740,22 +752,43 @@ Signing URL does not imply that the resource exists.
 
 <p>While they are available for all requests, these are most interesting for <code class="prettyprint">GET</code> requests.</p>
 
+<h2 id="request-sizes">Request sizes</h2>
+
+<p>Similar to response times, these are of the form <code class="prettyprint">bits.&lt;request-method&gt;-&lt;resource-type&gt;-request-size</code>, e.g.:</p>
+
+<ul>
+<li><code class="prettyprint">bits.GET-buildpacks-request-size</code></li>
+<li><code class="prettyprint">bits.DELETE-droplets-request-size</code></li>
+<li><code class="prettyprint">bits.POST-app_stash-request-size</code></li>
+</ul>
+
+<p>While they are available for all requests, these are most interesting for <code class="prettyprint">PUT</code>/<code class="prettyprint">POST</code> requests.</p>
+
+<h2 id="request-status-codes">Request status codes</h2>
+
+<p>These are of the form <code class="prettyprint">bits.status-&lt;status-code&gt;</code>, e.g.:</p>
+
+<ul>
+<li><code class="prettyprint">bits.status-404</code></li>
+<li><code class="prettyprint">bits.status-200</code></li>
+</ul>
+
 <h2 id="copying-bits-to-the-blobstore">Copying bits to the blobstore</h2>
 
 <ul>
-<li><code class="prettyprint">bits.app_stash-cp_r_to_blobstore-time.sparse-avg</code></li>
-<li><code class="prettyprint">bits.packages-cp_to_blobstore-time.sparse-avg</code></li>
-<li><code class="prettyprint">bits.buildpack-cp_to_blobstore-time.sparse-avg</code></li>
-<li><code class="prettyprint">bits.droplet-cp_to_blobstore-time.sparse-avg</code></li>
-<li><code class="prettyprint">bits.buildpack_cache-cp_to_blobstore-time.sparse-avg</code></li>
+<li><code class="prettyprint">bits.app_stash-cp_r_to_blobstore-time</code></li>
+<li><code class="prettyprint">bits.packages-cp_to_blobstore-time</code></li>
+<li><code class="prettyprint">bits.buildpack-cp_to_blobstore-time</code></li>
+<li><code class="prettyprint">bits.droplet-cp_to_blobstore-time</code></li>
+<li><code class="prettyprint">bits.buildpack_cache-cp_to_blobstore-time</code></li>
 </ul>
 
 <h2 id="updating-the-cloud-controller">Updating the Cloud Controller</h2>
 
 <ul>
-<li><code class="prettyprint">bits.packages-cc_updater_processing_upload-time.sparse-avg</code></li>
-<li><code class="prettyprint">bits.packages-cc_updater_ready-time.sparse-avg</code></li>
-<li><code class="prettyprint">bits.packages-cc_updater_failed-time.sparse-avg</code></li>
+<li><code class="prettyprint">bits.packages-cc_updater_processing_upload-time</code></li>
+<li><code class="prettyprint">bits.packages-cc_updater_ready-time</code></li>
+<li><code class="prettyprint">bits.packages-cc_updater_failed-time</code></li>
 </ul>
 
       </div>
