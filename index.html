@@ -138,13 +138,26 @@
 <blockquote>
 <p>Example request:</p>
 </blockquote>
-<pre class="highlight shell"><code>curl -X PUT <span class="s1">'https://internal.example.com/packages/c33e184b-e698-4290-952e-4047601e4627'</span> <span class="se">\</span>
-  -F <span class="nv">package</span><span class="o">=</span>@package-file
+<pre class="highlight shell"><code>curl -X PUT <span class="s1">'https://internal.example.com/packages/c33e184b-e698-4290-952e-4047601e4627?async=true'</span> <span class="se">\</span>
+  -F <span class="nv">package</span><span class="o">=</span>@package-file -F <span class="nv">resources</span><span class="o">=</span><span class="s1">'[{
+  "sha1": "8b381f8864b572841a26266791c64ae97738a659",
+  "fn":   "script.rb",
+  "mode": "0644"
+}]'</span>
 </code></pre>
 <blockquote>
 <p>Example response:</p>
 </blockquote>
-<pre class="highlight shell"><code>HTTP/1.1 201 Created
+<pre class="highlight shell"><code>HTTP/1.1 202 Accepted
+
+<span class="o">{</span>
+  <span class="s2">"guid"</span>:       <span class="s2">"c33e184b-e698-4290-952e-4047601e4627"</span>,
+  <span class="s2">"state"</span>:      <span class="s2">"PROCESSING_UPLOAD"</span>,
+  <span class="s2">"type"</span>:       <span class="s2">"bits"</span>,
+  <span class="s2">"created_at"</span>: <span class="s2">"2018-08-07T12:05:31.075337155+02:00"</span>,
+  <span class="s2">"sha1"</span>:       <span class="s2">"54f4f25322f2a30d1ba50e556ff8249d0bba9bf4"</span>,
+  <span class="s2">"sha256"</span>:     <span class="s2">"2a953858fee9aa617aa8617b5b805e82c3f859be02e9a5ae175f8a55e0d2e020"</span>,
+<span class="o">}</span>
 </code></pre>
 <h3 id="http-request">HTTP Request</h3>
 
@@ -152,11 +165,33 @@
 
 <p>where <code class="prettyprint">:guid</code> is the package&rsquo;s GUID.</p>
 
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><code class="prettyprint">async</code></td>
+<td><code class="prettyprint">false</code></td>
+<td>When <code class="prettyprint">true</code>, request will return immediately, and upload the package to the backend blobstore in the background. The package state will be updated in the Cloud Controller once the background upload is finished.</td>
+</tr>
+</tbody></table>
+
 <h3 id="request-body">Request Body</h3>
 
-<p><code class="prettyprint">package: &lt;formfile&gt;</code></p>
+<p>The request body must either be a multipart upload with the following form fields:</p>
 
-<p>If the body is not a file upload, but contains a <code class="prettyprint">:source_guid</code>, its value is treated as <code class="prettyprint">:guid</code> and an attempt is made to copy the package from the one identified by the value of <code class="prettyprint">:source_guid</code>.</p>
+<p><code class="prettyprint">package: &lt;formfile&gt;</code> or <code class="prettyprint">bits: &lt;formfile&gt;</code></p>
+
+<p>Optional:<code class="prettyprint">resources: [ { &quot;sha1&quot;: &quot;&lt;sha1-checksum&gt;&quot;, &quot;fn&quot;: &quot;&lt;filename&gt;&quot;, &quot;mode&quot;: &quot;&lt;filemode&gt;&quot; }, ...]</code></p>
+
+<p>Where <code class="prettyprint">package</code> and <code class="prettyprint">bits</code> can be used interchangeably.</p>
+
+<p>Or, if the body is not a multipart upload, but contains a <code class="prettyprint">:source_guid</code>, its value is treated as <code class="prettyprint">:guid</code> and an attempt is made to copy the package from the one identified by the value of <code class="prettyprint">:source_guid</code>.</p>
 
 <h3 id="access">Access</h3>
 
@@ -591,6 +626,8 @@
 
 <h2 id="uploading-entries">Uploading Entries</h2>
 
+<p><strong>Deprecated.</strong> <em>This endpoint will be removed in future major versions of the Bits-Service. This functionality is now integrated in <a href="#uploading-a-package">Uploading a Package</a>.</em></p>
+
 <blockquote>
 <p>Example request:</p>
 </blockquote>
@@ -623,6 +660,8 @@
 <p>Internal endpoint only</p>
 
 <h2 id="bundling-entries">Bundling Entries</h2>
+
+<p><strong>Deprecated.</strong> <em>This endpoint will be removed in future major versions of the Bits-Service. This functionality is now integrated in <a href="#uploading-a-package">Uploading a Package</a>.</em></p>
 
 <blockquote>
 <p>Example request:</p>
@@ -696,7 +735,7 @@ https://bits-service.example.com/signed/packages/test-package?md5<span class="o"
 <tr>
 <td><code class="prettyprint">verb</code></td>
 <td><code class="prettyprint">GET</code></td>
-<td>Defines the verb that can be used in association with the signed URL. Either <code class="prettyprint">GET</code> or <code class="prettyprint">PUT</code>.</td>
+<td>Defines the verb that can be used in association with the signed URL. Either <code class="prettyprint">GET</code>, <code class="prettyprint">PUT</code>, or <code class="prettyprint">POST</code>.</td>
 </tr>
 </tbody></table>
 
