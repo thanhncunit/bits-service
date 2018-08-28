@@ -183,7 +183,7 @@
 
 <h3 id="request-body">Request Body</h3>
 
-<p>The request body must either be a multipart upload with the following form fields:</p>
+<p>The request body must either be a multipart upload with the following form fields</p>
 
 <p><code class="prettyprint">package: &lt;formfile&gt;</code> or <code class="prettyprint">bits: &lt;formfile&gt;</code></p>
 
@@ -749,8 +749,11 @@ https://bits-service.example.com/signed/packages/test-package?md5<span class="o"
 <pre class="highlight shell"><code>curl -X PUT <span class="s1">'https://internal.example.com/signed/packages/bdf47b84-1349-4abd-9561-5004858dfa05?md5=YDjcMjytsnVEzoSxqpiC4A&amp;expires=1492594615'</span> <span class="se">\</span>
   -F <span class="nv">package</span><span class="o">=</span>@package-file
 </code></pre>
-<aside class="notice">
-Signing URL does not imply that the resource exists.
+<aside class="notice">Notice:
+ <ul>
+  <li>Signing URL does not imply that the resource exists.</li>
+  <li>Resource endpoint `app_stash/matches` only supports `POST` as `verb` query parameter</li>
+ </ul>
 </aside>
 
 <h1 id="metrics">Metrics</h1>
